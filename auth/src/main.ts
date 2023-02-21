@@ -1,16 +1,15 @@
 import express from "express";
+import { routing } from "./router";
 
 const server = async () => {
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
-    app.get('/', (_req, res) => {
-        res.send("Hello world!");
-    });
+    app.use(routing)
 
-    app.listen(5000, () => {
-        console.log('API listening on port', 5000)
+    app.listen(8080, () => {
+        console.log('API listening on port', 8080)
     });
 }
 
