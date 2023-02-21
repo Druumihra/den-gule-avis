@@ -1,13 +1,9 @@
 function Topbar() {
-
     return (
-      <div className="Topbar">
-        <nav>
-          <h1>Den Scuffed Avis</h1>
+        <nav className="Topbar">
+            <h1>Den Scuffed Avis</h1>
         </nav>
-      </div>
-    )
-  }
-  
-  export default Topbar
-  
+    );
+}
+
+export default Topbar;
