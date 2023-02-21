@@ -1,13 +1,13 @@
-interface Identifiable {
+export interface Identifiable {
     id: string,
 }
 
-interface User {
+export interface User {
     name: string,
     password: string,
 }
 
-interface Session {
+export interface Session {
     userId: string,
     token: string,
 }
