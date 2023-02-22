@@ -1,0 +1,7 @@
+nav {
+    padding: 8px;
+    background-color: rgb(100, 100, 100);
+    box-shadow: 0px 0px 8px 0px black;
+    overflow: hidden;
+    color: rgb(240, 240, 240);;
+  }

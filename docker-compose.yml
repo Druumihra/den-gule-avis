@@ -1,6 +1,6 @@
 services:
   frontend:
-    #restart: unless-stopped
+    restart: unless-stopped
     build: ./frontend
     expose:
       - 8080 # since we configured frontend port to be 8080 in frontend/Dockerfile

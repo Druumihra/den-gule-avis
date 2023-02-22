@@ -7,4 +7,9 @@ server {
         proxy_pass       http://frontend:8080/;
         proxy_redirect   off;
     }
+
+    #location /api/ {
+    #    proxy_pass       http://backend:8080/;
+    #    proxy_redirect   off;
+    #}
 }
