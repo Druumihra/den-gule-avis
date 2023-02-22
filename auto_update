@@ -10,7 +10,7 @@ restart_server()
 
 check_and_restart_server() 
 {
-    git pull --rebase
+    git pull --ff
     latest_hash=$(git log -n 1 --format="%H")
     if [ "$latest_hash" != "$running_hash" ]; then
         restart_server
