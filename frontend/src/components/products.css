@@ -15,7 +15,7 @@
     outline: inherit;
 }
 
-.product {
+.Product {
     display: flex;
     flex-direction: row;
     box-shadow: 0px 2px 4px -1px ;
@@ -25,11 +25,11 @@
     max-width: 1000px;
 }
 
-.product h2 {
+.Product h2 {
     margin-bottom: 20px;
 }
 
-.product div {
+.Product div {
     margin-left: 20px;
 }
 

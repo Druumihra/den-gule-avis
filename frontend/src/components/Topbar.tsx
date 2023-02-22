@@ -1,3 +1,5 @@
+import "./topbar.css";
+
 function Topbar() {
     return (
         <nav className="Topbar">
