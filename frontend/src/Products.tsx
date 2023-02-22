@@ -1,13 +1,12 @@
 import "./products.css";
 
+import img from "./assets/placeholder.jpeg";
+
 function Products() {
     return (
         <div className="Products">
-            <div id="product-1" className="product">
-                <img
-                    src="src/assets/placeholder.jpeg"
-                    alt="lækker suger klar på sjov"
-                />
+            <button id="product-1" className="product">
+                <img src={img} alt="lækker suger klar på sjov" />
                 <div>
                     <h2>Lækker suger klar på sjov</h2>
                     <p>
@@ -17,7 +16,7 @@ function Products() {
                         expedita, fuga ullam optio maiores itaque ratione nihil.
                     </p>
                 </div>
-            </div>
+            </button>
         </div>
     );
 }
