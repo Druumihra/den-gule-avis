@@ -1,0 +1,25 @@
+#!/bin/sh
+
+time_between_sync=5m
+
+restart_server()
+{
+    sudo docker compose down
+    sudo docker compose up -d --build
+}
+
+check_and_restart_server() 
+{
+    git pull --rebase
+    latest_hash=$(git log -n 1 --format="%H")
+    if [ "$latest_hash" != "$running_hash" ]; then
+        restart_server
+        running_hash=$(git log -n 1 --format="%H")
+    fi
+}
+
+while true; 
+do 
+    check_and_restart_server
+    sleep $time_between_sync
+done
