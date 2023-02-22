@@ -37,31 +37,49 @@ routing.post('/login', inject(basedDb, async(req: Request, res: Response, db: Da
 }))
 
 
-routing.post('/register', inject(basedDb, (req: Request, res: Response, db: Database) => {
+routing.post('/register', inject(basedDb, async(req: Request, res: Response, db: Database) => {
     const body: RegisterRequest = req.body
-
-    if (body.username !== "") {
-        res.status(200).json({message: 'Success'})
-    }
-    if (body.username === "") {
+    
+    if (!body.username) {
         res.status(400).json({error: 'Invalid username'})
+        return;
     }
-    else {
-        res.status(500).json({error: 'Server error'})
+    if (!body.password) {
+        res.status(400).json({error: 'Invalid Password'})
+        return;
     }
+    await db.addUser({name: body.username, password: body.password})
+    res.status(200).json({message: 'Success'})
+    
 }))
 
 routing.get('/tokenToUser/:token', inject(basedDb, async(req: Request, res: Response, db: Database) => {
     
     const session = await db.sessionFromToken(req.params.token)
     if (session === null) {
-        res.status(413).json({error: "Out of coffee"})
+        res.status(400).json({error: "Invalid session token"})
         return;
     } 
     const user = await db.userFromId(session.userId)
     if (user === null) {
-        res.status(400).json({error: "Out of coffee"})
+        res.status(500).json({error: "server error"})
         return;
     }
     res.status(200).json({message: "success", user:{id: user.id, username: user.name}})
+}))
+
+routing.post('/logout/:token', inject(basedDb, async(req: Request, res: Response, db: Database) => {
+    const session = await db.sessionFromToken(req.params.token) 
+    if (session === null) {
+        res.status(400).json({error: "Invalid session token"})
+        return;
+    } 
+    const user = await db.userFromId(session.userId)
+    if (user === null) {
+        res.status(500).json({error: "server error"})
+        return;
+    }
+    await db.deleteSession({userId: user.id, token: req.params.token})
+    res.status(200).json({message: "success"})
+
 }))
