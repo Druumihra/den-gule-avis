@@ -68,8 +68,8 @@ routing.get('/tokenToUser/:token', inject(basedDb, async(req: Request, res: Resp
     res.status(200).json({message: "success", user:{id: user.id, username: user.name}})
 }))
 
-routing.post('/logout/:token', inject(basedDb, async(req: Request, res: Response, db: Database) => {
-    const session = await db.sessionFromToken(req.params.token) 
+routing.post('/logout/', inject(basedDb, async(req: Request, res: Response, db: Database) => {
+    const session = await db.sessionFromToken(req.body.token) 
     if (session === null) {
         res.status(400).json({error: "Invalid session token"})
         return;

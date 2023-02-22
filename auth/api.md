@@ -59,3 +59,25 @@
     }
 }
 ```
+
+## `POST /logout`
+
+### REQUEST
+
+```ts
+{
+    userId: string
+    token: string
+}
+```
+
+### RESPONSE
+
+`status: 200 | 400| 500`
+
+```ts
+{
+    message: "success" | "Invalid session token" | "server error"
+}
+
+```
