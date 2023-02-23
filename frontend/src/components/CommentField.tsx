@@ -1,7 +1,4 @@
-interface Comment {
-    user: string,
-    text: string,
-}
+import { Comment } from "../api/Comment";
 
 interface Props {
     comments: Comment[],
