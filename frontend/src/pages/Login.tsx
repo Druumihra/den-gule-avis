@@ -1,17 +1,25 @@
+import { Link } from "react-router-dom";
 import Topbar from "../components/Topbar";
-import "./login.css";
+import "./auth.css";
 
 function Login() {
     return (
         <>
             <Topbar />
-            <div className="Login">
+            <div className="auth">
                 <h1>Login</h1>
                 <input type="text" placeholder="username" />
                 <br />
                 <input type="password" placeholder="password" />
                 <br />
-                <input type="button" value="Sign in" />
+                <input type="submit" value="Sign in" />
+                <p>
+                    Don't have an account?{" "}
+                    <span className="account-msg">
+                        <Link to="/register">Sign up</Link>
+                    </span>{" "}
+                    here
+                </p>
             </div>
         </>
     );

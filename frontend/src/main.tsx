@@ -9,6 +9,9 @@ import NoPage from "./pages/NoPage";
 import oneProduct from "./api/oneProduct";
 import addComment from "./api/addComment";
 import allProducts from "./api/allProducts";
+import Register from "./pages/Register";
+import { registerUser } from "./api/register";
+import { User } from "./api/User";
 
 const router = createBrowserRouter([
     {
@@ -21,6 +24,20 @@ const router = createBrowserRouter([
     {
         path: "login",
         element: <Login />,
+    },
+    {
+        path: "register",
+        element: <Register />,
+        action: async ({ request }) => {
+            const formData = await request.formData();
+            const user: User = {
+                username: formData.get("username") as string,
+                password: formData.get("password") as string,
+            };
+            registerUser(user);
+
+            return null;
+        },
     },
     {
         path: "/product/:id",

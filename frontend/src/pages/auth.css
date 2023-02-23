@@ -1,4 +1,4 @@
-.Login {
+.auth {
     margin: 0;
     position: absolute;
     top: 50%;
@@ -7,8 +7,12 @@
     text-align: center;
 }
 
-.Login input {
+.auth input, button {
     margin-top: 30px;
     padding: 16px;
     font-size: 20px;
+}
+
+.auth p {
+    font-size: 16px;
 }
