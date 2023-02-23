@@ -28,7 +28,7 @@ Response: 200 - Product
 ### POST /products
 
 Request: Product
-Response: 204 - [empty]
+Response: 201 - [empty]
 
 ### DELETE /products/{id}
 
@@ -43,5 +43,5 @@ Response: 204 - [empty]
 ### POST /products/{id}/comments
 
 Request: string
-Response: 204 - [empty]
+Response: 201 - [empty]
 
