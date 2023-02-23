@@ -1,14 +1,7 @@
 FROM node:16.18.1-alpine AS frontend-builder
 
-COPY public /src/
-COPY src /src/
-COPY package.json /src/
-COPY yarn.lock /src/
-COPY vite.config.ts /src/
-COPY index.html /src/
-COPY tsconfig.json /src/
-COPY tsconfig.node.json /src/
-WORKDIR /src/
+COPY . /src
+WORKDIR /src
 
 RUN ["yarn", "install", "--frozen-lockfile"]
 RUN ["yarn", "build"]
