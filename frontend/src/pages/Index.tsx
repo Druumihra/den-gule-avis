@@ -1,11 +1,12 @@
-import Products from "../components/Products";
+import Product from "../components/Product";
 import Topbar from "../components/Topbar";
+import "./index.css";
 
 function Index() {
     return (
         <>
             <Topbar />
-            <Products />
+            <Product />
         </>
     );
 }

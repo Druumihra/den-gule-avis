@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import "./main.css";
 import Index from "./pages/Index";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProductView from "./pages/ProductView";
+import Login from "./pages/Login";
+import NoPage from "./pages/NoPage";
 
 const router = createBrowserRouter([
     {
@@ -11,8 +13,16 @@ const router = createBrowserRouter([
         element: <Index />,
     },
     {
+        path: "login",
+        element: <Login />,
+    },
+    {
         path: "/productView",
         element: <ProductView />,
+    },
+    {
+        path: "*",
+        element: <NoPage />,
     },
 ]);
 
