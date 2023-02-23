@@ -5,7 +5,5 @@ WORKDIR /src
 RUN cargo build --release
 
 FROM scratch AS runner
-
 COPY --from=builder /src/target/release/backend /
-
-CMD ["backend"]
+CMD ["/backend"]

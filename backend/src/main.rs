@@ -1,10 +1,14 @@
 mod types;
 
 use actix_cors::Cors;
-use actix_web::{HttpServer, HttpRequest, HttpResponse, App, Responder, get, post, delete, web::{Data, Json, Bytes}};
+use actix_web::{
+    delete, get, post,
+    web::{Bytes, Data, Json},
+    App, HttpRequest, HttpResponse, HttpServer, Responder,
+};
 use serde::Deserialize;
 use std::sync::{Arc, Mutex};
-use types::{BasedDb, Product, Comment};
+use types::{BasedDb, Comment, Product};
 
 #[get("/products")]
 async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
@@ -65,7 +69,8 @@ async fn create_product(
 async fn delete_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Responder {
     let mut db = (**db).lock().unwrap();
 
-    let index = db.products
+    let index = db
+        .products
         .iter()
         .position(|p| p.id == req.match_info().get("id").unwrap());
 
@@ -73,7 +78,7 @@ async fn delete_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Resp
         Some(i) => {
             db.products.remove(i);
             HttpResponse::NoContent()
-        },
+        }
         None => HttpResponse::NotFound(),
     }
 }
@@ -84,7 +89,8 @@ async fn add_comment(db: Data<Mutex<BasedDb>>, bytes: Bytes, req: HttpRequest) -
 
     match String::from_utf8(bytes.to_vec()) {
         Ok(text) => {
-            let index = db.products
+            let index = db
+                .products
                 .iter()
                 .position(|p| p.id == req.match_info().get("id").unwrap());
 
@@ -95,10 +101,10 @@ async fn add_comment(db: Data<Mutex<BasedDb>>, bytes: Bytes, req: HttpRequest) -
                         user_id: "0".to_string(), // TODO
                     });
                     HttpResponse::Created()
-                },
+                }
                 None => HttpResponse::NotFound(),
             }
-        },
+        }
         Err(_) => HttpResponse::BadRequest(),
     }
 }
@@ -127,7 +133,7 @@ async fn main() -> std::io::Result<()> {
             .service(delete_product)
             .service(add_comment)
     })
-    .bind(("127.0.0.1", 8081))?
+    .bind(("0.0.0.0", 8081))?
     .run()
     .await
 }
