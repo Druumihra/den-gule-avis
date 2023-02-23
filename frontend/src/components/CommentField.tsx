@@ -6,10 +6,10 @@ interface Props {
     comments: Comment[],
 }
 
-function ResponseText(success: boolean) {
-    if (success) {
+function ResponseText(success: boolean | undefined) {
+    if (success === true) {
         return <p>Besked sendt</p>
-    } else {
+    } else if (success === false) {
         return <p>Der opstod en fejl.</p>
     }
 }

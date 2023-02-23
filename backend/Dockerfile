@@ -4,6 +4,9 @@ COPY . /src
 WORKDIR /src
 RUN cargo build --release
 
-FROM scratch AS runner
-COPY --from=builder /src/target/release/backend /
-CMD ["/backend"]
+FROM debian:bullseye AS runner
+RUN adduser runner
+USER runner
+RUN mkdir -p /home/runner/srv
+COPY --from=builder --chown=runner /src/target/release/backend /home/runner/srv
+CMD ["/home/runner/srv/backend"]
