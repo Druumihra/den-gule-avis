@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express"
 import { Database } from "./Database";
 import { inject } from "./inject";
 import { generateToken } from "./generateToken";
+import { BasedDb } from "./BasedDb";
 
 export const routing = Router()
 
@@ -15,7 +16,7 @@ interface RegisterRequest {
     password?: string,
 }
 
-const basedDb = {} as Database;
+const basedDb = new BasedDb();
 
 routing.post('/login', inject(basedDb, async(req: Request, res: Response, db: Database) =>{
     const body: LoginRequest = req.body;
