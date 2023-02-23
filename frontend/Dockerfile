@@ -1,4 +1,4 @@
-FROM node:16.18.1-alpine AS builder
+FROM node:16.18.1-alpine AS frontend-builder
 
 COPY public /src/
 COPY src /src/
@@ -13,10 +13,15 @@ WORKDIR /src/
 RUN ["yarn", "install", "--frozen-lockfile"]
 RUN ["yarn", "build"]
 
-FROM busybox:1.34.1-musl AS runner
+FROM golang:1.19.2-alpine AS server-builder
 
-RUN adduser -D runner
-USER runner
-RUN mkdir -p /home/runner/static
-COPY --chown=runner --from=builder /src/dist/ /home/runner/static
-CMD ["busybox", "httpd", "-f", "-p", "8080", "-h", "/home/runner/static"]
+COPY server /src
+WORKDIR /src
+ENV CGO_ENABLED=0
+RUN ["go", "build", "."]
+
+FROM scratch AS runner
+COPY --from=frontend-builder /src/dist/ /files
+COPY --from=server-builder /src/server /
+
+CMD ["/server"]
