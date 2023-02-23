@@ -12,6 +12,8 @@ import allProducts from "./api/allProducts";
 import Register from "./pages/Register";
 import { registerUser } from "./api/register";
 import { User } from "./api/User";
+import CreateProductPage from "./pages/CreateProduct";
+import createProduct from "./api/createProduct";
 
 const router = createBrowserRouter([
     {
@@ -40,7 +42,7 @@ const router = createBrowserRouter([
         },
     },
     {
-        path: "/product/:id",
+        path: "product/:id",
         element: <ProductView />,
         loader: async ({ params }) => {
             return oneProduct(`${params.id}`);
@@ -52,6 +54,19 @@ const router = createBrowserRouter([
             addComment(`${params.id}`, text);
 
             return null;
+        },
+    },
+    {
+        path: "create",
+        element: <CreateProductPage />,
+        action: async ({ request }) => {
+            const body = Object.fromEntries(await request.formData());
+
+            const { title, image, description } = body as { [k: string]: string };
+
+            const created = await createProduct({ title, image, description });
+
+            return created;
         },
     },
     {
