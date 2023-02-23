@@ -61,7 +61,7 @@ async fn create_product(
     HttpResponse::Created()
 }
 
-#[delete("/product/{id}")]
+#[delete("/products/{id}")]
 async fn delete_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Responder {
     let mut db = (**db).lock().unwrap();
 
@@ -78,7 +78,7 @@ async fn delete_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Resp
     }
 }
 
-#[post("/product/{id}/comments")]
+#[post("/products/{id}/comments")]
 async fn add_comment(db: Data<Mutex<BasedDb>>, bytes: Bytes, req: HttpRequest) -> impl Responder {
     let mut db = (**db).lock().unwrap();
 

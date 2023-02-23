@@ -4,6 +4,7 @@ import { Link, BrowserRouter } from "react-router-dom";
 function Topbar() {
     return (
         <div className="Topbar">
+            <img id="logo" src="/favicon.ico"></img>
             <Link className="link" to="/">
                 Den Scuffed Avis
             </Link>
