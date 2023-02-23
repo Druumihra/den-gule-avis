@@ -12,7 +12,7 @@ function Login() {
                 <br />
                 <input type="password" placeholder="password" />
                 <br />
-                <input type="submit" value="Sign in" />
+                <button type="submit">Sign in</button>
                 <p>
                     Don't have an account?{" "}
                     <span className="account-msg">

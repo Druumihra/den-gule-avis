@@ -8,19 +8,21 @@
   }
 
 .link {
+  padding: 4px;
   display: flex;
   align-items: center;
   border: none;
+  border-radius: 5%;
   background: none;
   color:rgb(240, 240, 240);
   cursor: pointer;
   height: 40px;
   font-size: large;  
   text-decoration: none;
+  transition: 200ms ease-in-out background-color;
   
 }
 
 .link:hover {
-  background-color: rgb(240, 240, 240);
-  color: black;
-}
+  background-color:  rgb(110, 110, 110);
+} 
