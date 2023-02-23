@@ -24,7 +24,7 @@ routing.post('/login', inject(basedDb, async(req: Request, res: Response, db: Da
     || body.password === "" 
     || body.username === undefined 
     || body.password === undefined) {
-        res.status(400).json({error: 'Invalid username or password'})
+        res.status(400).json({error: 'invalid login'})
         return;
     }
 
@@ -59,7 +59,7 @@ routing.get('/tokenToUser/:token', inject(basedDb, async(req: Request, res: Resp
     
     const session = await db.sessionFromToken(req.params.token)
     if (session === null) {
-        res.status(400).json({error: "Invalid session token"})
+        res.status(400).json({error: "invalid token"})
         return;
     } 
     const user = await db.userFromId(session.userId)
