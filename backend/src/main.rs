@@ -1,11 +1,10 @@
 mod types;
 
-use actix_web::{HttpServer, HttpRequest, HttpResponse, App, Responder, get, post, delete, web::{Data, Json}};
-use types::{Product, BasedDb};
-use std::sync::{Arc, Mutex};
+use actix_cors::Cors;
+use actix_web::{HttpServer, HttpRequest, HttpResponse, App, Responder, get, post, delete, web::{Data, Json, Bytes}};
 use serde::Deserialize;
 use std::sync::{Arc, Mutex};
-use types::{BasedDb, Product};
+use types::{BasedDb, Product, Comment};
 
 #[get("/products")]
 async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
@@ -79,6 +78,31 @@ async fn delete_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Resp
     }
 }
 
+#[post("/product/{id}/comments")]
+async fn add_comment(db: Data<Mutex<BasedDb>>, bytes: Bytes, req: HttpRequest) -> impl Responder {
+    let mut db = (**db).lock().unwrap();
+
+    match String::from_utf8(bytes.to_vec()) {
+        Ok(text) => {
+            let index = db.products
+                .iter()
+                .position(|p| p.id == req.match_info().get("id").unwrap());
+
+            match index {
+                Some(i) => {
+                    db.products[i].comments.push(Comment {
+                        text: text,
+                        user_id: "0".to_string(), // TODO
+                    });
+                    HttpResponse::Created()
+                },
+                None => HttpResponse::NotFound(),
+            }
+        },
+        Err(_) => HttpResponse::BadRequest(),
+    }
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let products = Arc::new(Mutex::new(
@@ -101,8 +125,9 @@ async fn main() -> std::io::Result<()> {
             .service(get_product)
             .service(create_product)
             .service(delete_product)
-        )
-        .bind(("127.0.0.1", 8081))?
-        .run()
-        .await
+            .service(add_comment)
+    })
+    .bind(("127.0.0.1", 8081))?
+    .run()
+    .await
 }
