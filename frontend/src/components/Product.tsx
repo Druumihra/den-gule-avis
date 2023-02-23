@@ -1,19 +1,26 @@
-import img from "../assets/placeholder.jpeg";
+import { Link } from "react-router-dom";
 
-function Product() {
+interface Props {
+    id: string,
+    title: string,
+    image: string,
+    description: string,
+}
+
+function Product(props: Props) {
     return (
-        <button id="product-1" className="Product">
-            <img src={img} alt="lækker suger klar på sjov" />
+        <div id={`product-${props.id}`} className="Product">
+            <img src={props.image} />
             <div>
-                <h2>Lækker suger klar på sjov</h2>
+                <h2>{props.title}</h2>
                 <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Velit beatae aperiam, ipsa minima placeat iusto odit
-                    architecto provident facilis impedit possimus porro
-                    expedita, fuga ullam optio maiores itaque ratione nihil.
+                    {props.description}
                 </p>
+                <Link to={`product/${props.id}`} >
+                    Se mere
+                </Link >
             </div>
-        </button>
+        </div>
     );
 }
 

@@ -1,0 +1,20 @@
+.product-view-image {
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  max-height: 50%;
+}
+
+.product-view-grid {
+  display: flex;
+  gap: 1rem;
+}
+
+.product-view-grid p {
+  flex: 1;
+}
+
+.comment-block {
+  padding-left: 1rem;
+  border-left: 2px solid #ccc;
+}

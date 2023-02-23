@@ -1,15 +1,23 @@
 import { Comment } from "../api/Comment";
+import { useFetcher } from "react-router-dom";
 
 interface Props {
+    id: string,
     comments: Comment[],
 }
 
 function CommentField(props: Props) {
 
+    const fetcher = useFetcher();
+    const Form = fetcher.Form;
+
     return (
         <>
             <h2>Kommentarfelt</h2>
-            <input id="comment-input" /> <button>Send</button>
+            <Form method="post" action={`/product/${props.id}`}>
+                <input type="text" name="text" />
+                <button type="submit">Send</button>
+            </Form>
             {
                 props.comments.map((comment) =>
                     <div className="comment-block">

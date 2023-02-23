@@ -16,7 +16,7 @@ function ProductView() {
                     <img className="product-view-image" src={product.image} />
                     <p>{product.description}</p>
                 </div>
-                <CommentField comments={product.comments} />
+                <CommentField comments={product.comments} id={product.id} />
             </main>
         </>
     );

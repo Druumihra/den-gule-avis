@@ -8,24 +8,33 @@ import Login from "./pages/Login";
 import NoPage from "./pages/NoPage";
 import oneProduct from "./api/oneProduct";
 import addComment from "./api/addComment";
+import allProducts from "./api/allProducts";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Index />,
+        loader: async () => {
+            return allProducts();
+        },
     },
     {
         path: "login",
         element: <Login />,
     },
     {
-        path: "/productView/:id",
+        path: "/product/:id",
         element: <ProductView />,
         loader: async ({ params }) => {
             return oneProduct(`${params.id}`);
         },
         action: async ({ request, params }) => {
-            return addComment(`${params.id}`, await request.json());
+            const formData = await request.formData();
+            const text = formData.get("text") as string;
+
+            addComment(`${params.id}`, text);
+
+            return null;
         },
     },
     {
