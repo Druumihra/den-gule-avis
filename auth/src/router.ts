@@ -35,6 +35,7 @@ routing.post('/login', inject(basedDb, async(req: Request, res: Response, db: Da
     }
     const token = generateToken(64)
     await db.addSession({userId: user.id, token: token})
+    res.status(200).json({message: 'Success'})
 }))
 
 
@@ -66,7 +67,7 @@ routing.get('/tokenToUser/:token', inject(basedDb, async(req: Request, res: Resp
         res.status(500).json({error: "server error"})
         return;
     }
-    res.status(200).json({message: "success", user:{id: user.id, username: user.name}})
+    res.status(200).json({message: "Success", user:{id: user.id, username: user.name}})
 }))
 
 routing.post('/logout/', inject(basedDb, async(req: Request, res: Response, db: Database) => {
@@ -81,6 +82,6 @@ routing.post('/logout/', inject(basedDb, async(req: Request, res: Response, db: 
         return;
     }
     await db.deleteSession({userId: user.id, token: req.params.token})
-    res.status(200).json({message: "success"})
+    res.status(200).json({message: "Success"})
 
 }))
