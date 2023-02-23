@@ -1,11 +1,8 @@
 mod types;
 
-use actix_cors::Cors;
-use actix_web::{
-    get, post,
-    web::{Data, Json},
-    App, HttpRequest, HttpResponse, HttpServer, Responder,
-};
+use actix_web::{HttpServer, HttpRequest, HttpResponse, App, Responder, get, post, delete, web::{Data, Json}};
+use types::{Product, BasedDb};
+use std::sync::{Arc, Mutex};
 use serde::Deserialize;
 use std::sync::{Arc, Mutex};
 use types::{BasedDb, Product};
@@ -65,6 +62,23 @@ async fn create_product(
     HttpResponse::Created()
 }
 
+#[delete("/product/{id}")]
+async fn delete_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Responder {
+    let mut db = (**db).lock().unwrap();
+
+    let index = db.products
+        .iter()
+        .position(|p| p.id == req.match_info().get("id").unwrap());
+
+    match index {
+        Some(i) => {
+            db.products.remove(i);
+            HttpResponse::NoContent()
+        },
+        None => HttpResponse::NotFound(),
+    }
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let products = Arc::new(Mutex::new(
@@ -86,8 +100,9 @@ async fn main() -> std::io::Result<()> {
             .service(get_products)
             .service(get_product)
             .service(create_product)
-    })
-    .bind(("127.0.0.1", 8081))?
-    .run()
-    .await
+            .service(delete_product)
+        )
+        .bind(("127.0.0.1", 8081))?
+        .run()
+        .await
 }
