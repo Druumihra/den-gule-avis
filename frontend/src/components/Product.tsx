@@ -16,7 +16,7 @@ function Product(props: Props) {
                 <p>
                     {props.description}
                 </p>
-                <Link to={`product/${props.id}`} >
+                <Link to={`product/${props.id}`} className="button">
                     Se mere
                 </Link >
             </div>

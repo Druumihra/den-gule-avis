@@ -1,9 +1,9 @@
 mod types;
 
-use actix_web::{HttpServer, HttpRequest, HttpResponse, App, Responder, get, post, web::Data};
-use types::Product;
+use actix_web::{HttpServer, HttpRequest, HttpResponse, App, Responder, get, post, web::{Data, Json}};
+use types::{Product, BasedDb};
 use std::sync::{Arc, Mutex};
-use std::vec::Vec;
+use serde::Deserialize;
 
 #[get("/products")]
 async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
@@ -14,6 +14,7 @@ async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
 #[get("/product/{id}")]
 async fn get_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Responder {
     let db = (**db).lock().unwrap();
+
     let product = db.products
         .iter()
         .find(|&p| p.id == req.match_info().get("id").unwrap());
@@ -24,13 +25,34 @@ async fn get_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Respond
     }
 }
 
-#[post("/products")]
-async fn create_product() -> impl Responder {
-    ""
+#[derive(Deserialize)]
+struct ProductCreateRequest {
+    pub title: String,
+    pub description: String,
+    pub image: String,
 }
 
-struct BasedDb {
-    pub products: Vec<Product>,
+#[post("/products")]
+async fn create_product(db: Data<Mutex<BasedDb>>, req: Json<ProductCreateRequest>) -> impl Responder {
+    let mut db = (**db).lock().unwrap();
+
+    let last_id: usize = db.products
+        .iter()
+        .map(|prod| prod.clone().id)
+        .last()
+        .unwrap_or("0".to_string())
+        .parse()
+        .unwrap();
+
+    db.products.push(Product {
+        id: (last_id + 1).to_string(),
+        title: req.title.clone(),
+        description: req.description.clone(),
+        image: req.image.clone(),
+        comments: vec!(),
+    });
+
+    HttpResponse::Created()
 }
 
 #[actix_web::main]

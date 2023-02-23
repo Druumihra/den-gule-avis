@@ -16,7 +16,7 @@ function CommentField(props: Props) {
             <h2>Kommentarfelt</h2>
             <Form method="post" action={`/product/${props.id}`}>
                 <input type="text" name="text" />
-                <button type="submit">Send</button>
+                <button type="submit" className="button">Send</button>
             </Form>
             {
                 props.comments.map((comment) =>
