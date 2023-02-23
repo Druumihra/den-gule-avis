@@ -1,3 +1,4 @@
+import { authApiUrl } from "./url";
 import { User } from "./User";
 
 export async function register(user: User) {
@@ -6,7 +7,7 @@ export async function register(user: User) {
         errormsg.innerHTML = "Invalid username or password";
     }
 
-    const res = await fetch("http://localhost:8080/register", {
+    const res = await fetch(authApiUrl("register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),

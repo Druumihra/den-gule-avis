@@ -1,9 +1,19 @@
 services:
+  backend:
+    restart: unless-stopped
+    build: ./backend
+    expose:
+      - 8081
+  auth:
+    restart: unless-stopped
+    build: ./auth
+    expose:
+      - 8080
   frontend:
     restart: unless-stopped
     build: ./frontend
     expose:
-      - 8080 # since we configured frontend port to be 8080 in frontend/Dockerfile
+      - 8080
   nginx:
     image: nginx
     restart: unless-stopped
@@ -11,5 +21,7 @@ services:
       - "80:80"
     depends_on:
       - frontend
+      - backend
+      - auth
     volumes:
       - ./nginx/templates:/etc/nginx/templates

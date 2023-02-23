@@ -1,7 +1,8 @@
 import { Product } from "./Product";
+import { apiUrl } from "./url";
 
 export default async function oneProduct(id: string): Promise<Product> {
-    const response = await fetch(`http://localhost:8081/product/${id}`);
+    const response = await fetch(apiUrl(`product/${id}`));
     if (response.status !== 200) {
         return {
             id,

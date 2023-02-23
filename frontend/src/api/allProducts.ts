@@ -1,7 +1,8 @@
 import { Product } from "./Product";
+import { apiUrl } from "./url";
 
 export default async function allProduct(): Promise<Product[] | null> {
-    const response = await fetch("http://localhost:8081/products");
+    const response = await fetch(apiUrl("/products"));
     if (response.status !== 200) {
         return null;
     }
