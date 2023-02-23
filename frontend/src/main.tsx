@@ -2,10 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import Index from "./pages/Index";
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProductView from "./pages/ProductView";
 
 const router = createBrowserRouter([

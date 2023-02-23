@@ -1,4 +1,4 @@
-nav {
+.Topbar {
     display: flex;
     justify-content: space-between;
     padding: 8px;
@@ -7,17 +7,20 @@ nav {
     overflow: hidden;
   }
 
-nav button {
+.link {
+  display: flex;
+  align-items: center;
   border: none;
   background: none;
   color:rgb(240, 240, 240);
   cursor: pointer;
   height: 40px;
-  font-size: large;
+  font-size: large;  
+  text-decoration: none;
   
 }
 
-nav button:hover {
+.link:hover {
   background-color: rgb(240, 240, 240);
   color: black;
 }
