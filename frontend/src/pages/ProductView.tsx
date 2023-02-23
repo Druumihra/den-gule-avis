@@ -7,6 +7,7 @@ import { useLoaderData } from "react-router-dom";
 function ProductView() {
     const product = useLoaderData() as Product;
 
+
     return (
         <>
             <Topbar />

@@ -62,9 +62,7 @@ const router = createBrowserRouter([
             const formData = await request.formData();
             const text = formData.get("text") as string;
 
-            addComment(`${params.id}`, text);
-
-            return null;
+            return addComment(`${params.id}`, text);
         },
     },
     {
@@ -77,9 +75,7 @@ const router = createBrowserRouter([
                 [k: string]: string;
             };
 
-            const created = await createProduct({ title, image, description });
-
-            return created;
+            return await createProduct({ title, image, description });
         },
     },
     {

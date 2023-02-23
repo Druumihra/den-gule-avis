@@ -6,6 +6,14 @@ interface Props {
     comments: Comment[],
 }
 
+function ResponseText(success: boolean) {
+    if (success) {
+        return <p>Besked sendt</p>
+    } else {
+        return <p>Der opstod en fejl.</p>
+    }
+}
+
 function CommentField(props: Props) {
 
     const fetcher = useFetcher();
@@ -14,6 +22,7 @@ function CommentField(props: Props) {
     return (
         <>
             <h2>Kommentarfelt</h2>
+            {ResponseText(fetcher.data)}
             <Form method="post" action={`/product/${props.id}`}>
                 <input type="text" name="text" />
                 <button type="submit" className="button">Send</button>

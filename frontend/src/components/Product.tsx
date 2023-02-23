@@ -10,7 +10,7 @@ interface Props {
 function Product(props: Props) {
     return (
         <div id={`product-${props.id}`} className="Product">
-            <img src={props.image} />
+            {props.image !== "" && <img src={props.image} />}
             <div>
                 <h2>{props.title}</h2>
                 <p>

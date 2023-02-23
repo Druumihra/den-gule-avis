@@ -11,7 +11,7 @@ function Index() {
             <Topbar />
             <main className="cropped">
                 {products.map((product) =>
-                    <Product {...product} />
+                    <Product {...product} key={`product-${product.id}`} />
                 )}
             </main>
         </>
