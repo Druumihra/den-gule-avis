@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Form, Link } from "react-router-dom";
 import Topbar from "../components/Topbar";
 import "./auth.css";
 
@@ -8,11 +8,17 @@ function Login() {
             <Topbar />
             <div className="auth">
                 <h1>Login</h1>
-                <input type="text" placeholder="username" />
-                <br />
-                <input type="password" placeholder="password" />
-                <br />
-                <button type="submit">Sign in</button>
+                <Form method="post" action={`/login`}>
+                    <input name="username" type="text" placeholder="username" />
+                    <br />
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="password"
+                    />
+                    <br />
+                    <button type="submit">Sign in</button>
+                </Form>
                 <p>
                     Don't have an account?{" "}
                     <span className="account-msg">

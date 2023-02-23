@@ -13,6 +13,6 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc --noEmit -p tsconfig.json",
     "checkwatch": "tsc --noEmit --watch -p tsconfig.json",
-    "dev": "node dist/main.js"
+    "dev": "tsc -p tsconfig.json && node dist/main.js"
   }
 }

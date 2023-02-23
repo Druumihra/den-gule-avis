@@ -10,10 +10,11 @@ import oneProduct from "./api/oneProduct";
 import addComment from "./api/addComment";
 import allProducts from "./api/allProducts";
 import Register from "./pages/Register";
-import { registerUser } from "./api/register";
+import { register } from "./api/register";
 import { User } from "./api/User";
 import CreateProductPage from "./pages/CreateProduct";
 import createProduct from "./api/createProduct";
+import { login } from "./api/login";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +27,16 @@ const router = createBrowserRouter([
     {
         path: "login",
         element: <Login />,
+        action: async ({ request }) => {
+            const formData = await request.formData();
+            const user: User = {
+                username: formData.get("username") as string,
+                password: formData.get("password") as string,
+            };
+            login(user);
+
+            return null;
+        },
     },
     {
         path: "register",
@@ -36,7 +47,7 @@ const router = createBrowserRouter([
                 username: formData.get("username") as string,
                 password: formData.get("password") as string,
             };
-            registerUser(user);
+            register(user);
 
             return null;
         },
@@ -62,7 +73,9 @@ const router = createBrowserRouter([
         action: async ({ request }) => {
             const body = Object.fromEntries(await request.formData());
 
-            const { title, image, description } = body as { [k: string]: string };
+            const { title, image, description } = body as {
+                [k: string]: string;
+            };
 
             const created = await createProduct({ title, image, description });
 
