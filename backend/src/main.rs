@@ -1,9 +1,14 @@
 mod types;
 
-use actix_web::{HttpServer, HttpRequest, HttpResponse, App, Responder, get, post, web::{Data, Json}};
-use types::{Product, BasedDb};
-use std::sync::{Arc, Mutex};
+use actix_cors::Cors;
+use actix_web::{
+    get, post,
+    web::{Data, Json},
+    App, HttpRequest, HttpResponse, HttpServer, Responder,
+};
 use serde::Deserialize;
+use std::sync::{Arc, Mutex};
+use types::{BasedDb, Product};
 
 #[get("/products")]
 async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
@@ -15,7 +20,8 @@ async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
 async fn get_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Responder {
     let db = (**db).lock().unwrap();
 
-    let product = db.products
+    let product = db
+        .products
         .iter()
         .find(|&p| p.id == req.match_info().get("id").unwrap());
 
@@ -33,10 +39,14 @@ struct ProductCreateRequest {
 }
 
 #[post("/products")]
-async fn create_product(db: Data<Mutex<BasedDb>>, req: Json<ProductCreateRequest>) -> impl Responder {
+async fn create_product(
+    db: Data<Mutex<BasedDb>>,
+    req: Json<ProductCreateRequest>,
+) -> impl Responder {
     let mut db = (**db).lock().unwrap();
 
-    let last_id: usize = db.products
+    let last_id: usize = db
+        .products
         .iter()
         .map(|prod| prod.clone().id)
         .last()
@@ -49,7 +59,7 @@ async fn create_product(db: Data<Mutex<BasedDb>>, req: Json<ProductCreateRequest
         title: req.title.clone(),
         description: req.description.clone(),
         image: req.image.clone(),
-        comments: vec!(),
+        comments: vec![],
     });
 
     HttpResponse::Created()
@@ -57,7 +67,6 @@ async fn create_product(db: Data<Mutex<BasedDb>>, req: Json<ProductCreateRequest
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
     let products = Arc::new(Mutex::new(
         BasedDb {
             products: vec!(Product {
@@ -70,14 +79,15 @@ async fn main() -> std::io::Result<()> {
         }
     ));
 
-    HttpServer::new(move ||
+    HttpServer::new(move || {
         App::new()
             .app_data(Data::from(products.clone()))
+            .wrap(Cors::permissive())
             .service(get_products)
             .service(get_product)
             .service(create_product)
-        )
-        .bind(("127.0.0.1", 8081))?
-        .run()
-        .await
+    })
+    .bind(("127.0.0.1", 8081))?
+    .run()
+    .await
 }

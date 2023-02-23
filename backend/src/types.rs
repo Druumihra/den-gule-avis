@@ -1,5 +1,5 @@
-use std::vec::Vec;
 use serde::Serialize;
+use std::vec::Vec;
 
 #[derive(Serialize, Clone)]
 pub struct Product {
