@@ -10,7 +10,7 @@ Product:
 
 Comment:
 - text: string
-- user_id: int
+- user_id: string
 
 ## Routes
 
