@@ -2,9 +2,8 @@ import { authApiUrl } from "./url";
 import { User } from "./User";
 
 export async function login(user: User) {
-    const errormsg = document.getElementById("login-error-msg")!;
     if (!user.username || !user.password) {
-        errormsg.innerHTML = "Invalid username or password";
+        return "Invalid username or password";
     }
     const res = await fetch(authApiUrl("login"), {
         method: "POST",
@@ -13,8 +12,8 @@ export async function login(user: User) {
     });
     const body = await res.json();
     if (body.message === "Success") {
-        return;
+        return "Du er nu logget ind";
     } else {
-        errormsg.innerHTML = body.message;
+        return body.message;
     }
 }

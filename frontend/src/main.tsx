@@ -33,9 +33,7 @@ const router = createBrowserRouter([
                 username: formData.get("username") as string,
                 password: formData.get("password") as string,
             };
-            login(user);
-
-            return null;
+            return login(user);
         },
     },
     {
@@ -47,9 +45,7 @@ const router = createBrowserRouter([
                 username: formData.get("username") as string,
                 password: formData.get("password") as string,
             };
-            register(user);
-
-            return null;
+            return register(user);
         },
     },
     {

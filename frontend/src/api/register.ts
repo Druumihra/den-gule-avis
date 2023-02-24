@@ -2,9 +2,8 @@ import { authApiUrl } from "./url";
 import { User } from "./User";
 
 export async function register(user: User) {
-    const errormsg = document.getElementById("register-error-msg")!;
     if (!user.username || !user.password) {
-        errormsg.innerHTML = "Invalid username or password";
+        return "Invalid username or password";
     }
 
     const res = await fetch(authApiUrl("register"), {
@@ -14,8 +13,8 @@ export async function register(user: User) {
     });
     const body = await res.json();
     if (body.message === "Success") {
-        return;
+        return "Bruger skabt";
     } else {
-        errormsg.innerHTML = body.message;
+        return body.message;
     }
 }

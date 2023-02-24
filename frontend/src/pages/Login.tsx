@@ -1,13 +1,17 @@
-import { Form, Link } from "react-router-dom";
+import { Link, useFetcher } from "react-router-dom";
 import Topbar from "../components/Topbar";
 import "./auth.css";
 
 function Login() {
+    const fetcher = useFetcher();
+    const Form = fetcher.Form;
+
     return (
         <>
             <Topbar />
             <div className="auth">
                 <h1>Login</h1>
+                <p className="error-msg">{fetcher.data}</p>
                 <Form method="post" action={`/login`}>
                     <input name="username" type="text" placeholder="username" />
                     <br />
