@@ -21,6 +21,8 @@ sælgeren og andre kunder
 • Som bruger vil jeg gerne have at vide når der sker noget relevant
 UI designet er ikke fastlagt, så i kan gøre hvad i vil.
 
+* Kunden vil gerne have siden kørende 24/7, så han selv kan se og prøve produktet.
+
 ## Produkt liste side
 Man kan se en liste af alle produkter på siden. Man kan apply filters, så man kan
 se relaterede produkter.
