@@ -4,8 +4,8 @@ time_between_sync=1m
 
 restart_server()
 {
-    sudo docker compose down
-    sudo docker compose up -d --build
+    docker compose down
+    docker compose up -d --build
 }
 
 check_and_restart_server() 
