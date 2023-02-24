@@ -9,6 +9,7 @@ export async function login(user: User) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
+        credentials: "include",
     });
     const body = await res.json();
     if (body.message === "Success") {

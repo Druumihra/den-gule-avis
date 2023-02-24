@@ -35,6 +35,8 @@ routing.post('/login', inject(basedDb, async(req: Request, res: Response, db: Da
     }
     const token = generateToken(64)
     await db.addSession({userId: user.id, token: token})
+
+    res.cookie("token", token, { maxAge: 7200000, httpOnly: false, sameSite: "lax" });
     res.status(200).json({message: 'Success'})
 }))
 
