@@ -4,21 +4,19 @@
 DBA, men uden så mange features.
 
 ## User stories:
-• Som en sælger vil jeg kunne sælge produkter til kunder.
+* Som en sælger vil jeg kunne sælge produkter til kunder.
 
-• Som en køber vil jeg kunne købe produkter.
+* Som en køber vil jeg kunne købe produkter.
 
-• Som en sælger vil jeg gerne kunne redigere mine opslag.
+* Som en sælger vil jeg gerne kunne redigere mine opslag.
 
-• Som kunde vil jeg gerne kunne filtrere og sammenligne produkter.
+* Som kunde vil jeg gerne kunne filtrere og sammenligne produkter.
 
-• Som sælger vil jeg gerne kunne slette mine produkter.
+* Som sælger vil jeg gerne kunne slette mine produkter.
 
-• Som bruger vil jeg gerne kommunikere om et specifikt produkt med
+* Som bruger vil jeg gerne kommunikere om et specifikt produkt med sælgeren og andre kunder
 
-sælgeren og andre kunder
-
-• Som bruger vil jeg gerne have at vide når der sker noget relevant
+* Som bruger vil jeg gerne have at vide når der sker noget relevant
 UI designet er ikke fastlagt, så i kan gøre hvad i vil.
 
 * Kunden vil gerne have siden kørende 24/7, så han selv kan se og prøve produktet.
