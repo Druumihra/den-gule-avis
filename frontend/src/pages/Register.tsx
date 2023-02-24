@@ -11,7 +11,7 @@ function Register() {
             <Topbar />
             <div className="auth">
                 <h1>Register</h1>
-                <p className="error-msg">{fetcher.data}</p>
+                <p>{fetcher.data}</p>
                 <Form method="post" action={`/register`}>
                     <input name="username" type="text" placeholder="username" />
                     <br />
