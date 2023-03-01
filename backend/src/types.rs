@@ -12,6 +12,7 @@ pub struct Product {
 
 #[derive(Serialize, Clone)]
 pub struct Comment {
+    pub id: String,
     pub text: String,
     pub user_id: String,
 }

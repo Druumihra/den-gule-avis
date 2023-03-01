@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub struct BasedDb {
-    pub products: Vec<Product>,
+    products: Vec<Product>,
 }
 
 impl BasedDb {

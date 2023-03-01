@@ -4,6 +4,7 @@ use async_trait::async_trait;
 pub enum Error {
     NotFound,
     Duplicate,
+    NetworkError,
 }
 
 #[async_trait]
