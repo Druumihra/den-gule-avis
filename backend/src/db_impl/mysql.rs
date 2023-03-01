@@ -118,11 +118,17 @@ impl Database for MySql {
             comments,
         })
     }
-    async fn add_comment(&mut self, product_id: String, comment: String) -> Result<(), Error> {
+    async fn add_comment(
+        &mut self,
+        product_id: String,
+        comment: String,
+        user_id: String,
+    ) -> Result<(), Error> {
         sqlx::query!(
-            "INSERT INTO comments (text, product_id) VALUES (?, ?);",
+            "INSERT INTO comments (text, product_id, user_id) VALUES (?, ?, ?);",
             comment,
             product_id,
+            user_id,
         )
         .execute(&self.pool)
         .await

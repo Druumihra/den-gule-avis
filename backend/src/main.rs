@@ -1,7 +1,7 @@
+mod auth;
 mod database;
 mod db_impl;
 mod types;
-mod auth;
 
 use crate::database::Database;
 use actix_cors::Cors;
@@ -15,7 +15,7 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 #[get("/products")]
-async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
+async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
     let db = (**db).lock().await;
 
     match db.products().await {
@@ -25,7 +25,7 @@ async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
 }
 
 #[get("/product/{id}")]
-async fn get_product(db: Data<Mutex<BasedDb>>, id: Path<String>) -> impl Responder {
+async fn get_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
     let db = (**db).lock().await;
 
     match db.product_from_id(id.clone()).await {
@@ -44,7 +44,7 @@ struct ProductCreateRequest {
 
 #[post("/products")]
 async fn create_product(
-    db: Data<Mutex<BasedDb>>,
+    db: Data<Mutex<dyn Database>>,
     body: Json<ProductCreateRequest>,
 ) -> impl Responder {
     let mut db = (**db).lock().await;
@@ -60,7 +60,7 @@ async fn create_product(
 }
 
 #[delete("/products/{id}")]
-async fn delete_product(db: Data<Mutex<BasedDb>>, id: Path<String>) -> impl Responder {
+async fn delete_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
     let mut db = (**db).lock().await;
 
     match db.delete_product(id.clone()).await {
@@ -78,7 +78,7 @@ struct AddCommentRequest {
 
 #[post("/products/{id}/comments")]
 async fn add_comment(
-    db: Data<Mutex<BasedDb>>,
+    db: Data<Mutex<dyn Database>>,
     body: Json<AddCommentRequest>,
     id: Path<String>,
 ) -> impl Responder {
@@ -101,7 +101,7 @@ async fn main() -> std::io::Result<()> {
         std::process::exit(1);
     }
 
-    let products = Arc::new(Mutex::new(db_impl::based_db::BasedDb::new()));
+    let products = Arc::new(Mutex::new(db_impl::mysql::MySql::new()));
 
     HttpServer::new(move || {
         App::new()
