@@ -14,7 +14,7 @@ export async function login(user: User) {
     });
     const body = await res.json();
     if (body.message === "Success") {
-        return redirect("/");
+        window.location.href = "/";
     } else {
         return body.message;
     }

@@ -7,6 +7,15 @@
     overflow: hidden;
   }
 
+.user-logged-in {
+  display: flex;
+  margin: 0;
+  padding: 4px;
+  font-size: large;
+  color: white;
+  align-items: center;
+} 
+
 .link {
   padding: 4px;
   display: flex;

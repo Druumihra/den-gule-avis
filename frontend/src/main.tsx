@@ -15,13 +15,18 @@ import { User } from "./api/User";
 import CreateProductPage from "./pages/CreateProduct";
 import createProduct from "./api/createProduct";
 import { login } from "./api/login";
+import { userInfo } from "./api/userFromToken";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Index />,
         loader: async () => {
-            return allProducts();
+            const data = {
+                products: await allProducts(),
+                user: await userInfo(),
+            };
+            return data;
         },
     },
     {
@@ -33,7 +38,9 @@ const router = createBrowserRouter([
                 username: formData.get("username") as string,
                 password: formData.get("password") as string,
             };
-            return login(user);
+            login(user);
+
+            return null;
         },
     },
     {
@@ -45,20 +52,28 @@ const router = createBrowserRouter([
                 username: formData.get("username") as string,
                 password: formData.get("password") as string,
             };
-            return register(user);
+            register(user);
+
+            return null;
         },
     },
     {
         path: "product/:id",
         element: <ProductView />,
         loader: async ({ params }) => {
-            return oneProduct(`${params.id}`);
+            const data = {
+                product: await oneProduct(`${params.id}`),
+                user: await userInfo(),
+            };
+            return data;
         },
         action: async ({ request, params }) => {
             const formData = await request.formData();
             const text = formData.get("text") as string;
 
-            return addComment(`${params.id}`, text);
+            addComment(`${params.id}`, text);
+
+            return null;
         },
     },
     {
@@ -71,7 +86,9 @@ const router = createBrowserRouter([
                 [k: string]: string;
             };
 
-            return await createProduct({ title, image, description });
+            const created = await createProduct({ title, image, description });
+
+            return created;
         },
     },
     {

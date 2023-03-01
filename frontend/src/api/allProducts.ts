@@ -6,6 +6,6 @@ export default async function allProduct(): Promise<Product[] | null> {
     if (response.status !== 200) {
         return null;
     }
-    const products = await response.json() as Product[];
+    const products = (await response.json()) as Product[];
     return products;
 }
