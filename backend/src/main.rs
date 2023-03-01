@@ -2,6 +2,7 @@ mod based_db;
 mod database;
 mod types;
 
+use crate::{based_db::BasedDb, database::Database};
 use actix_cors::Cors;
 use actix_web::{
     delete, get, post,
@@ -9,17 +10,13 @@ use actix_web::{
     App, HttpResponse, HttpServer, Responder,
 };
 use serde::Deserialize;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use types::Product;
-
-use crate::{
-    based_db::BasedDb,
-    database::{Database, DatabaseError},
-};
 
 #[get("/products")]
 async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
-    let db = (**db).lock().unwrap();
+    let db = (**db).lock().await;
     match db.products().await {
         Ok(products) => HttpResponse::Ok().json(products),
         Err(_) => HttpResponse::InternalServerError().body("internal server error"),
@@ -28,11 +25,11 @@ async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
 
 #[get("/product/{id}")]
 async fn get_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
-    let db = (**db).lock().unwrap();
+    let db = (**db).lock().await;
 
     match db.product_from_id(id.clone()).await {
         Ok(product) => HttpResponse::Ok().json(product),
-        Err(DatabaseError::NotFound) => HttpResponse::NotFound().finish(),
+        Err(database::Error::NotFound) => HttpResponse::NotFound().finish(),
         Err(_) => HttpResponse::InternalServerError().finish(),
     }
 }
@@ -49,7 +46,7 @@ async fn create_product(
     db: Data<Mutex<dyn Database>>,
     body: Json<ProductCreateRequest>,
 ) -> impl Responder {
-    let mut db = (**db).lock().unwrap();
+    let mut db = (**db).lock().await;
 
     let title = body.title.clone();
     let description = body.description.clone();
@@ -63,11 +60,11 @@ async fn create_product(
 
 #[delete("/products/{id}")]
 async fn delete_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
-    let mut db = (**db).lock().unwrap();
+    let mut db = (**db).lock().await;
 
     match db.delete_product(id.clone()).await {
         Ok(()) => HttpResponse::NoContent().finish(),
-        Err(DatabaseError::NotFound) => HttpResponse::NotFound().finish(),
+        Err(database::Error::NotFound) => HttpResponse::NotFound().finish(),
         Err(_) => HttpResponse::InternalServerError().finish(),
     }
 }
@@ -78,11 +75,11 @@ async fn add_comment(
     body: String,
     id: Path<String>,
 ) -> impl Responder {
-    let mut db = (**db).lock().unwrap();
+    let mut db = (**db).lock().await;
 
     match db.add_comment(id.clone(), body).await {
         Ok(()) => HttpResponse::Created(),
-        Err(DatabaseError::NotFound) => HttpResponse::NotFound(),
+        Err(database::Error::NotFound) => HttpResponse::NotFound(),
         Err(_) => HttpResponse::InternalServerError(),
     }
 }
