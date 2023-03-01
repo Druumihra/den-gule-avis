@@ -17,6 +17,6 @@ pub trait Database {
         image: String,
     ) -> Result<(), Error>;
     async fn product_from_id(&self, id: String) -> Result<Product, Error>;
-    async fn add_comment(&mut self, post_id: String, comment: String) -> Result<(), Error>;
+    async fn add_comment(&mut self, post_id: String, comment: String, user_id: String) -> Result<(), Error>;
     async fn delete_product(&mut self, id: String) -> Result<(), Error>;
 }

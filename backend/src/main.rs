@@ -1,6 +1,7 @@
 mod database;
 mod db_impl;
 mod types;
+mod auth;
 
 use crate::database::Database;
 use actix_cors::Cors;
@@ -14,8 +15,9 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 #[get("/products")]
-async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
+async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
     let db = (**db).lock().await;
+
     match db.products().await {
         Ok(products) => HttpResponse::Ok().json(products),
         Err(_) => HttpResponse::InternalServerError().body("internal server error"),
@@ -23,7 +25,7 @@ async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
 }
 
 #[get("/product/{id}")]
-async fn get_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
+async fn get_product(db: Data<Mutex<BasedDb>>, id: Path<String>) -> impl Responder {
     let db = (**db).lock().await;
 
     match db.product_from_id(id.clone()).await {
@@ -42,7 +44,7 @@ struct ProductCreateRequest {
 
 #[post("/products")]
 async fn create_product(
-    db: Data<Mutex<dyn Database>>,
+    db: Data<Mutex<BasedDb>>,
     body: Json<ProductCreateRequest>,
 ) -> impl Responder {
     let mut db = (**db).lock().await;
@@ -58,7 +60,7 @@ async fn create_product(
 }
 
 #[delete("/products/{id}")]
-async fn delete_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
+async fn delete_product(db: Data<Mutex<BasedDb>>, id: Path<String>) -> impl Responder {
     let mut db = (**db).lock().await;
 
     match db.delete_product(id.clone()).await {
@@ -68,15 +70,24 @@ async fn delete_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl
     }
 }
 
+#[derive(Deserialize)]
+struct AddCommentRequest {
+    pub token: String,
+    pub text: String,
+}
+
 #[post("/products/{id}/comments")]
 async fn add_comment(
-    db: Data<Mutex<dyn Database>>,
-    body: String,
+    db: Data<Mutex<BasedDb>>,
+    body: Json<AddCommentRequest>,
     id: Path<String>,
 ) -> impl Responder {
     let mut db = (**db).lock().await;
 
-    match db.add_comment(id.clone(), body).await {
+    let user_id = auth::get_user_by_token(body.token.clone()).await.id;
+    println!("{}", user_id);
+
+    match db.add_comment(id.clone(), body.text.clone(), user_id).await {
         Ok(()) => HttpResponse::Created(),
         Err(database::Error::NotFound) => HttpResponse::NotFound(),
         Err(_) => HttpResponse::InternalServerError(),
