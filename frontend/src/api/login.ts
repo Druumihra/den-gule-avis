@@ -1,3 +1,4 @@
+import { redirect } from "react-router-dom";
 import { authApiUrl } from "./url";
 import { User } from "./User";
 
@@ -13,7 +14,7 @@ export async function login(user: User) {
     });
     const body = await res.json();
     if (body.message === "Success") {
-        return "Du er nu logget ind";
+        return redirect("/");
     } else {
         return body.message;
     }

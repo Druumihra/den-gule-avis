@@ -11,7 +11,7 @@ function Login() {
             <Topbar />
             <div className="auth">
                 <h1>Login</h1>
-                <p>{fetcher.data}</p>
+                <p className="error-msg">{fetcher.data}</p>
                 <Form method="post" action={`/login`}>
                     <input name="username" type="text" placeholder="username" />
                     <br />

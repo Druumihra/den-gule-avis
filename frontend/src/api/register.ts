@@ -1,5 +1,6 @@
 import { authApiUrl } from "./url";
 import { User } from "./User";
+import { redirect } from "react-router-dom";
 
 export async function register(user: User) {
     if (!user.username || !user.password) {
@@ -13,7 +14,7 @@ export async function register(user: User) {
     });
     const body = await res.json();
     if (body.message === "Success") {
-        return "Bruger skabt";
+        return redirect("/login");
     } else {
         return body.message;
     }
