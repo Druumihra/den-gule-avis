@@ -2,16 +2,18 @@ use async_trait::async_trait;
 
 use crate::{
     database::{Database, Error},
-    types::{Product, Comment},
+    types::{Comment, Product},
 };
 
 pub struct BasedDb {
     products: Vec<Product>,
+    id_counter: u32,
 }
 
 impl BasedDb {
     pub fn new() -> Self {
         Self {
+            id_counter: 0,
             products: vec!(Product {
                 id: "0".to_string(),
                 title: "test".to_string(),
@@ -29,22 +31,20 @@ impl Database for BasedDb {
         Ok(self.products.clone())
     }
 
-    async fn add_product(&mut self, title: String, description: String, image: String) -> Result<(), Error> {
-        let last_id: usize = self.products
-            .iter()
-            .map(|prod| prod.clone().id)
-            .last()
-            .unwrap_or("0".to_string())
-            .parse()
-            .unwrap();
-
+    async fn add_product(
+        &mut self,
+        title: String,
+        description: String,
+        image: String,
+    ) -> Result<(), Error> {
         self.products.push(Product {
-            id: (last_id + 1).to_string(),
-            title: title,
-            description: description,
-            image: image,
-            comments: vec!(),
+            id: (self.id_counter + 1).to_string(),
+            title,
+            description,
+            image,
+            comments: vec![],
         });
+        self.id_counter += 1;
 
         Ok(())
     }
@@ -56,29 +56,37 @@ impl Database for BasedDb {
         }
     }
 
-    async fn add_comment(&mut self, id: String, comment: String, user_id: String) -> Result<(), Error> {
-        for product in &mut self.products {
-            if product.id == id {
-                product.comments.push(Comment {
-                    text: comment,
-                    user_id: user_id,
-                });
-                return Ok(());
-            }
-        }
-        Err(Error::NotFound)
+    async fn add_comment(
+        &mut self,
+        product_id: String,
+        comment: String,
+        user_id: String,
+    ) -> Result<(), Error> {
+        let product = self
+            .products
+            .iter_mut()
+            .find(|product| product.id == product_id)
+            .ok_or(Error::NotFound)?;
+
+        (*product).comments.push(Comment {
+            id: self.id_counter.to_string(),
+            text: comment,
+            user_id,
+        });
+
+        self.id_counter += 1;
+
+        Ok(())
     }
 
     async fn delete_product(&mut self, id: String) -> Result<(), Error> {
-        let index = self.products
-            .iter()
-            .position(|p| p.id == id);
+        let index = self.products.iter().position(|p| p.id == id);
 
         match index {
             Some(i) => {
                 self.products.remove(i);
                 Ok(())
-            },
+            }
             None => Err(Error::NotFound),
         }
     }
