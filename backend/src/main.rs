@@ -12,7 +12,6 @@ use actix_web::{
 use serde::Deserialize;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use types::Product;
 
 #[get("/products")]
 async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
@@ -86,6 +85,11 @@ async fn add_comment(
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    if dotenv::dotenv().is_err() {
+        println!("Unable to find .env file");
+        std::process::exit(1);
+    }
+
     let products = Arc::new(Mutex::new(db_impl::based_db::BasedDb::new()));
 
     HttpServer::new(move || {

@@ -9,5 +9,7 @@ edition = "2021"
 actix-cors = "0.6.4"
 actix-web = "4.3.0"
 async-trait = "0.1.64"
+dotenv = "0.15.0"
 serde = { version = "1.0.152", features = ["derive"] }
+sqlx = { version = "0.6.2", features = ["mysql", "runtime-actix-rustls"] }
 tokio = "1.25.0"
