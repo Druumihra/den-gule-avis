@@ -3,6 +3,7 @@ mod database;
 mod db_impl;
 mod types;
 
+use crate::based_db::BasedDb;
 use crate::database::Database;
 use actix_cors::Cors;
 use actix_web::{
@@ -85,7 +86,6 @@ async fn add_comment(
     let mut db = (**db).lock().await;
 
     let user_id = auth::get_user_by_token(body.token.clone()).await.id;
-    println!("{}", user_id);
 
     match db.add_comment(id.clone(), body.text.clone(), user_id).await {
         Ok(()) => HttpResponse::Created(),
