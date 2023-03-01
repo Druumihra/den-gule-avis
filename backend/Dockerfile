@@ -2,6 +2,7 @@ FROM docker.io/rust:bullseye AS builder
 
 COPY . /src
 WORKDIR /src
+ENV DATABASE_URL=$DATABASE_URL
 RUN cargo build --release
 
 FROM debian:bullseye AS runner
