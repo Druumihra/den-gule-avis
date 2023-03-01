@@ -17,9 +17,9 @@
 
 ```ts
 {
-    message: "Success" | "invalid login" | "server error",
+    message: "Success" | "Invalid login" | "Server error",
     token?: "abcdefghijkl",
-    
+
 }
 ```
 
@@ -40,7 +40,7 @@
 
 ```ts
 {
-    message: "Success" | "invalid username" | "server error",
+    message: "Success" | "Invalid username" | "Server error",
 }
 ```
 
@@ -52,7 +52,7 @@
 
 ```ts
 {
-    message: "Success" | "invalid token" | "server error",
+    message: "Success" | "Invalid token" | "Server error",
     user: {
         id: "...",
         username: "...",
@@ -66,8 +66,8 @@
 
 ```ts
 {
-    userId: string
-    token: string
+  userId: string;
+  token: string;
 }
 ```
 
@@ -77,7 +77,6 @@
 
 ```ts
 {
-    message: "Success" | "Invalid session token" | "server error"
+  message: "Success" | "Invalid session token" | "Server error";
 }
-
 ```
