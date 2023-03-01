@@ -55,7 +55,7 @@ routing.post(
     }
     await db.addUser({ name: body.username, password: body.password });
     try {
-        await connection.query("INSERT INTO Users (Name, Password) VALUES (?, ?)", body.username, body.password) 
+       let SQLResult = await connection.query("INSERT INTO Users (Name, Password) VALUES (?, ?)", body.username, body.password) 
     }
     catch{
     
@@ -75,10 +75,18 @@ routing.get(
     if (user === null) {
       return res.status(500).json({ message: "Server error" });
     }
+    try {
+     let SQLResult = await connection.query("SELECT Name, id FROM USERS WHERE id = ?", session.userId) 
+    }
+    catch {
+  
+    }
     return res
       .status(200)
       .json({ message: "Success", user: { id: user.id, username: user.name } });
   })
+
+
 );
 
 routing.get(
@@ -89,7 +97,7 @@ routing.get(
             return res.status(400).json({ message: "Invalid user"})
         }
         return res.status(200).json({ username: user.name});
-    })
+    })  
 )
 
 routing.post(
