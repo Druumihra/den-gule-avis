@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::env;
 
 #[derive(Deserialize)]
@@ -18,7 +18,8 @@ pub async fn get_username_by_id(id: usize) -> String {
         username: String,
     }
 
-    reqwest::Client::new().get(request_path("/idToUser"))
+    reqwest::Client::new()
+        .get(request_path("/idToUser"))
         .json(&Request { id: id })
         .send()
         .await
@@ -46,6 +47,9 @@ pub async fn get_user_by_token(token: String) -> User {
 }
 
 fn request_path(path: &str) -> String {
-    return format!("{}{}", env::var("AUTH_SERVER").unwrap_or("http://localhost:8080".to_string()), path);
+    return format!(
+        "{}{}",
+        env::var("AUTH_SERVER").unwrap_or("http://localhost:8080".to_string()),
+        path
+    );
 }
-
