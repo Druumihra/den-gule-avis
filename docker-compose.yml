@@ -2,6 +2,8 @@ services:
   backend:
     restart: unless-stopped
     build: ./backend
+    depends_on:
+      - db
     expose:
       - 8081
     environment:
@@ -13,6 +15,9 @@ services:
       - 8080
   frontend:
     restart: unless-stopped
+    depends_on:
+      - auth
+      - backend
     build: ./frontend
     expose:
       - 8080
