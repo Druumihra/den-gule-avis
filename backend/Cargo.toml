@@ -8,4 +8,5 @@ edition = "2021"
 [dependencies]
 actix-cors = "0.6.4"
 actix-web = "4.3.0"
+async-trait = "0.1.64"
 serde = { version = "1.0.152", features = ["derive"] }

@@ -15,7 +15,3 @@ pub struct Comment {
     pub text: String,
     pub user_id: String,
 }
-
-pub struct BasedDb {
-    pub products: Vec<Product>,
-}

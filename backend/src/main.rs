@@ -1,33 +1,39 @@
+mod based_db;
+mod database;
 mod types;
 
 use actix_cors::Cors;
 use actix_web::{
     delete, get, post,
-    web::{Bytes, Data, Json},
-    App, HttpRequest, HttpResponse, HttpServer, Responder,
+    web::{Data, Json, Path},
+    App, HttpResponse, HttpServer, Responder,
 };
 use serde::Deserialize;
 use std::sync::{Arc, Mutex};
-use types::{BasedDb, Comment, Product};
+use types::Product;
+
+use crate::{
+    based_db::BasedDb,
+    database::{Database, DatabaseError},
+};
 
 #[get("/products")]
-async fn get_products(db: Data<Mutex<BasedDb>>) -> impl Responder {
+async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
     let db = (**db).lock().unwrap();
-    HttpResponse::Ok().json(&db.products)
+    match db.products().await {
+        Ok(products) => HttpResponse::Ok().json(products),
+        Err(_) => HttpResponse::InternalServerError().body("internal server error"),
+    }
 }
 
 #[get("/product/{id}")]
-async fn get_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Responder {
+async fn get_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
     let db = (**db).lock().unwrap();
 
-    let product = db
-        .products
-        .iter()
-        .find(|&p| p.id == req.match_info().get("id").unwrap());
-
-    match product {
-        Some(prod) => HttpResponse::Ok().json(prod),
-        None => HttpResponse::NotFound().body("404"),
+    match db.product_from_id(id.clone()).await {
+        Ok(product) => HttpResponse::Ok().json(product),
+        Err(DatabaseError::NotFound) => HttpResponse::NotFound().finish(),
+        Err(_) => HttpResponse::InternalServerError().finish(),
     }
 }
 
@@ -40,72 +46,44 @@ struct ProductCreateRequest {
 
 #[post("/products")]
 async fn create_product(
-    db: Data<Mutex<BasedDb>>,
-    req: Json<ProductCreateRequest>,
+    db: Data<Mutex<dyn Database>>,
+    body: Json<ProductCreateRequest>,
 ) -> impl Responder {
     let mut db = (**db).lock().unwrap();
 
-    let last_id: usize = db
-        .products
-        .iter()
-        .map(|prod| prod.clone().id)
-        .last()
-        .unwrap_or("0".to_string())
-        .parse()
-        .unwrap();
+    let title = body.title.clone();
+    let description = body.description.clone();
+    let image = body.image.clone();
 
-    db.products.push(Product {
-        id: (last_id + 1).to_string(),
-        title: req.title.clone(),
-        description: req.description.clone(),
-        image: req.image.clone(),
-        comments: vec![],
-    });
-
-    HttpResponse::Created()
+    match db.add_product(title, description, image).await {
+        Ok(()) => HttpResponse::Created().finish(),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
 }
 
 #[delete("/products/{id}")]
-async fn delete_product(db: Data<Mutex<BasedDb>>, req: HttpRequest) -> impl Responder {
+async fn delete_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
     let mut db = (**db).lock().unwrap();
 
-    let index = db
-        .products
-        .iter()
-        .position(|p| p.id == req.match_info().get("id").unwrap());
-
-    match index {
-        Some(i) => {
-            db.products.remove(i);
-            HttpResponse::NoContent()
-        }
-        None => HttpResponse::NotFound(),
+    match db.delete_product(id.clone()).await {
+        Ok(()) => HttpResponse::NoContent().finish(),
+        Err(DatabaseError::NotFound) => HttpResponse::NotFound().finish(),
+        Err(_) => HttpResponse::InternalServerError().finish(),
     }
 }
 
 #[post("/products/{id}/comments")]
-async fn add_comment(db: Data<Mutex<BasedDb>>, bytes: Bytes, req: HttpRequest) -> impl Responder {
+async fn add_comment(
+    db: Data<Mutex<dyn Database>>,
+    body: String,
+    id: Path<String>,
+) -> impl Responder {
     let mut db = (**db).lock().unwrap();
 
-    match String::from_utf8(bytes.to_vec()) {
-        Ok(text) => {
-            let index = db
-                .products
-                .iter()
-                .position(|p| p.id == req.match_info().get("id").unwrap());
-
-            match index {
-                Some(i) => {
-                    db.products[i].comments.push(Comment {
-                        text: text,
-                        user_id: "0".to_string(), // TODO
-                    });
-                    HttpResponse::Created()
-                }
-                None => HttpResponse::NotFound(),
-            }
-        }
-        Err(_) => HttpResponse::BadRequest(),
+    match db.add_comment(id.clone(), body).await {
+        Ok(()) => HttpResponse::Created(),
+        Err(DatabaseError::NotFound) => HttpResponse::NotFound(),
+        Err(_) => HttpResponse::InternalServerError(),
     }
 }
 
