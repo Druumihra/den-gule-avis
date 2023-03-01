@@ -1,8 +1,8 @@
-mod based_db;
 mod database;
+mod db_impl;
 mod types;
 
-use crate::{based_db::BasedDb, database::Database};
+use crate::database::Database;
 use actix_cors::Cors;
 use actix_web::{
     delete, get, post,
@@ -86,17 +86,7 @@ async fn add_comment(
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let products = Arc::new(Mutex::new(
-        BasedDb {
-            products: vec!(Product {
-                id: "0".to_string(),
-                title: "test".to_string(),
-                description: "test".to_string(),
-                image: "https://play-lh.googleusercontent.com/V_P-I-UENK93ahkQgOWel8X8yFxjhOOfMAZjxXrqp311Gm_RBtlDXHLQhwFZN8n4aIQ".to_string(),
-                comments: vec!(),
-            })
-        }
-    ));
+    let products = Arc::new(Mutex::new(db_impl::based_db::BasedDb::new()));
 
     HttpServer::new(move || {
         App::new()
