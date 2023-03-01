@@ -80,3 +80,15 @@
   message: "Success" | "Invalid session token" | "Server error";
 }
 ```
+
+## `GET /idToUseer`
+
+### REPONSE
+
+`status: 200 | 400`
+```ts
+{
+    message: "Success" | "Invalid user"
+    username: "..."
+}
+```

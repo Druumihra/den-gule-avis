@@ -3,7 +3,7 @@ import { Database } from "./Database";
 import { inject } from "./inject";
 import { generateToken } from "./generateToken";
 import { BasedDb } from "./BasedDb";
-
+import { connection } from "./SQLDb";
 export const routing = Router();
 
 interface LoginRequest {
@@ -54,6 +54,12 @@ routing.post(
       return res.status(400).json({ message: "Invalid Password" });
     }
     await db.addUser({ name: body.username, password: body.password });
+    try {
+        await connection.query("INSERT INTO Users (Name, Password) VALUES (?, ?)", body.username, body.password) 
+    }
+    catch{
+    
+    }
     return res.status(200).json({ message: "Success" });
   })
 );
@@ -74,6 +80,17 @@ routing.get(
       .json({ message: "Success", user: { id: user.id, username: user.name } });
   })
 );
+
+routing.get(
+    "/idToUser/",
+    inject(basedDb, async (req: Request, res: Response, db: Database) => {
+        const user = await db.userFromId(req.body.id);
+        if (user === null) {
+            return res.status(400).json({ message: "Invalid user"})
+        }
+        return res.status(200).json({ username: user.name});
+    })
+)
 
 routing.post(
   "/logout/",
