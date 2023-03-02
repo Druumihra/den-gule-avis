@@ -31,7 +31,7 @@ async function login(req: Request, res: Response, db: Database) {
 
   const user = await db.userFromName(body.username);
   if (!user) {
-    return res.status(400).json({ message: "User doesn't exist" });
+    return res.status(400).json({ message: "Invalid login" });
   }
 
   const token = generateToken(64);
@@ -52,7 +52,7 @@ async function register(req: Request, res: Response, db: Database) {
     return res.status(400).json({ message: "Invalid username" });
   }
   if (!body.password) {
-    return res.status(400).json({ message: "Invalid Password" });
+    return res.status(400).json({ message: "Invalid password" });
   }
   await db.addUser({ name: body.username, password: body.password });
   return res.status(200).json({ message: "Success" });
@@ -65,7 +65,7 @@ async function tokenToUser(req: Request, res: Response, db: Database) {
   }
   const user = await db.userFromId(session.userId);
   if (user === null) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(400).json({ message: "Invalid token" });
   }
   return res
     .status(200)
@@ -86,7 +86,7 @@ async function logout(req: Request, res: Response, db: Database) {
   }
   const user = await db.userFromId(session.userId);
   if (user === null) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(400).json({ message: "Invalid session token" });
   }
   await db.deleteSession({ userId: user.id, token: req.params.token });
   return res.status(200).json({ message: "Success" });

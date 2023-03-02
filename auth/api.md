@@ -40,7 +40,7 @@
 
 ```ts
 {
-    message: "Success" | "Invalid username" | "Server error",
+    message: "Success" | "Invalid username" | "Invalid password" | "Server error",
 }
 ```
 
