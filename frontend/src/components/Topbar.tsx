@@ -1,13 +1,11 @@
 import "./topbar.css";
 import { Link } from "react-router-dom";
-import { userInfo } from "../api/userFromToken";
 
 interface Props {
-    username: string;
+    username?: string;
 }
 
 function Topbar(props: Props) {
-    console.log(props.username);
     return (
         <div className="Topbar">
             <img id="logo" src="/favicon.ico"></img>

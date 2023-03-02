@@ -1,4 +1,6 @@
-USE database;
+CREATE DATABASE backend;
+
+USE backend;
 
 CREATE TABLE products(
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,

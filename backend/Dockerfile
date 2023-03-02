@@ -1,16 +1,15 @@
 FROM docker.io/rust:bullseye AS builder
-
-COPY . /src
 WORKDIR /src
-ENV DATABASE_URL=$DATABASE_URL
+COPY . /src
 RUN cargo build --release
 
-FROM debian:bullseye AS runner
+FROM docker.io/debian:bullseye AS runner
+RUN apt-get -y update
+RUN apt-get -y install mariadb-server
 RUN adduser runner
 USER runner
 RUN mkdir -p /home/runner/srv
-COPY --from=builder --chown=runner /src/target/release/backend /home/runner/srv
-
-ENV DATABASE_URL=$DATABASE_URL
+COPY --chown=runner --from=builder /src/target/release/backend /home/runner/srv
 EXPOSE 8081
+ENV DATABASE_URL=mysql://root:example@db:3306/backend
 CMD ["/home/runner/srv/backend"]

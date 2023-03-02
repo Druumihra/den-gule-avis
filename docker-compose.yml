@@ -7,7 +7,7 @@ services:
     expose:
       - 8081
     environment:
-      DATABASE_URL: mysql://root:example@db:3306/database
+      DATABASE_URL: "mysql://root:example@db:3306/backend"
   auth:
     restart: unless-stopped
     build: ./auth
@@ -35,11 +35,12 @@ services:
   db:
     image: mariadb
     restart: always
+    ports: 
+      - "3306:3306"
     expose: 
       - 3306
     environment:
       MYSQL_ROOT_PASSWORD: "example"
-      MYSQL_DATABASE: "database"
       MYSQL_ROOT_HOST: "%"
     volumes:
       - ./mariadb:/docker-entrypoint-initdb.d
