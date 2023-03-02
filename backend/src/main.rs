@@ -3,7 +3,6 @@ mod database;
 mod db_impl;
 mod types;
 
-use crate::based_db::BasedDb;
 use crate::database::Database;
 use actix_cors::Cors;
 use actix_web::{
