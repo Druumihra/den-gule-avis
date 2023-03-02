@@ -12,6 +12,7 @@ pub struct MySql {
     pool: MySqlPool,
 }
 
+#[derive(Debug)]
 pub enum ConnectionError {
     Sqlx(sqlx::Error),
     Env,

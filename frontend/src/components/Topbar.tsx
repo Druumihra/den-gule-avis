@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { userInfo } from "../api/userFromToken";
 
 interface Props {
-    username: string;
+    username?: string;
 }
 
 function Topbar(props: Props) {

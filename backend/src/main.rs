@@ -102,9 +102,12 @@ async fn main() -> std::io::Result<()> {
         println!("Unable to find .env file");
     };
 
-    let Ok(db) = MySql::new().await else {
-        println!("Unable to find connect to db");
-        std::process::exit(1);
+    let db = match MySql::new().await {
+        Ok(db) => db,
+        Err(err) => {
+            println!("Unable to connect to db: {err:?}");
+            std::process::exit(1);
+        }
     };
 
     let db: Arc<DbParam> = Arc::new(Mutex::new(db));
