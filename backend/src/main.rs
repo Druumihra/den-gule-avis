@@ -14,8 +14,26 @@ use db_impl::mysql::MySql;
 use serde::Deserialize;
 use std::sync::Arc;
 use tokio::sync::Mutex;
+use serde::Serialize;
+use std::collections::HashMap;
 
 type DbParam = Mutex<dyn Database + Send + Sync>;
+
+#[derive(Serialize)]
+struct ProductResponse {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub image: String,
+    pub comments: Vec<CommentResponse>,
+}
+
+#[derive(Serialize)]
+struct CommentResponse {
+    pub id: String,
+    pub text: String,
+    pub username: String,
+}
 
 #[get("/products")]
 async fn get_products(db: Data<DbParam>) -> impl Responder {
@@ -32,7 +50,32 @@ async fn get_product(db: Data<DbParam>, id: Path<String>) -> impl Responder {
     let db = (**db).lock().await;
 
     match db.product_from_id(id.clone()).await {
-        Ok(product) => HttpResponse::Ok().json(product),
+        Ok(product) => {
+            let mut user_id_name_map: HashMap<String, String> = HashMap::new();
+            for comment in product.comments.iter() {
+                if user_id_name_map.contains_key(&comment.user_id) {
+                    continue;
+                }
+                user_id_name_map.insert(
+                    comment.user_id.clone(),
+                    auth::get_username_by_id(comment.user_id.clone())
+                        .await
+                        .unwrap_or(format!("Unknown user #{}", comment.user_id))
+                );
+            }
+
+            HttpResponse::Ok().json(ProductResponse {
+                id: product.id.clone(),
+                title: product.title.clone(),
+                description: product.description.clone(),
+                image: product.image.clone(),
+                comments: product.comments.iter().map(|comment| CommentResponse {
+                    id: comment.id.clone(),
+                    text: comment.text.clone(),
+                    username: user_id_name_map.get(&comment.user_id).unwrap_or(&"Unknown".to_string()).clone(),
+                }).collect(),
+            })
+        },
         Err(database::Error::NotFound) => HttpResponse::NotFound().finish(),
         Err(_) => HttpResponse::InternalServerError().finish(),
     }
