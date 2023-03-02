@@ -30,7 +30,7 @@ function CommentField(props: Props) {
             {
                 props.comments.map((comment) =>
                     <div className="comment-block">
-                        <h3>Bruger #{comment.user_id}</h3>
+                        <h3>{comment.username}</h3>
                         <p>{comment.text}</p>
                     </div>
                 )

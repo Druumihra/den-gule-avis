@@ -7,10 +7,10 @@ pub struct User {
     pub username: String,
 }
 
-pub async fn get_username_by_id(id: usize) -> String {
+pub async fn get_username_by_id(id: String) -> Result<String, reqwest::Error> {
     #[derive(Serialize)]
     struct Request {
-        id: usize,
+        id: String,
     }
 
     #[derive(Deserialize)]
@@ -18,16 +18,15 @@ pub async fn get_username_by_id(id: usize) -> String {
         username: String,
     }
 
-    reqwest::Client::new()
+    Ok(reqwest::Client::new()
         .get(request_path("/idToUser"))
-        .json(&Request { id: id })
+        .json(&Request { id: id.clone() })
         .send()
-        .await
-        .expect("Could not get username by id")
+        .await?
         .json::<Response>()
-        .await
-        .expect("Could not parse json")
+        .await?
         .username
+    )
 }
 
 pub async fn get_user_by_token(token: String) -> User {
