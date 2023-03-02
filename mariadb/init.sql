@@ -18,3 +18,18 @@ CREATE TABLE comments(
 INSERT INTO products (title, description, image) VALUES ("flot fyr 1", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
 INSERT INTO products (title, description, image) VALUES ("flot fyr 2", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
 INSERT INTO products (title, description, image) VALUES ("flot fyr 3", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
+
+CREATE DATABASE auth;
+
+USE auth;
+CREATE TABLE Users (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	name TEXT NOT NULL,
+	password NVARCHAR(150) NOT NULL
+);
+
+CREATE TABLE Sessions (
+	token NVARCHAR(64) NOT NULL,
+	user_Id INT NOT NULL
+); 
+
