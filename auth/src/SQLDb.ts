@@ -1,70 +1,89 @@
+import mysql, { Pool } from "mysql2/promise";
+import {
+  OkPacket,
+  RowDataPacket,
+} from "mysql2/typings/mysql/lib/protocol/packets";
 import { Database, Identifiable, Session, User } from "./Database";
 
-
-const mysql = require('mysql2')
-
-
-const connection = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    Db: process.env.DB
-})
-
 export class SQLDb implements Database {
-    public async addUser(user: User): Promise<boolean> {
-        try {
-            await connection.query("INSERT INTO Users (Name, Password) VALUES (?, ?)", user.name, user.password) 
-         return true;
-        }
-         catch{
-         return false;
-        }
-    }
-    public async sessionFromToken(token: string): Promise<Session | null> {
-        try {
-            const res = await connection.query("SELECT * FROM Sessions WHERE Token = ?", token)
-            return res;
-        }
-        catch {
-            return null;
-        }
-    }
-    public async userFromId(id: string): Promise<(User & Identifiable) | null> {
-        try {
-            const res = await connection.query("SELECT Name, Password FROM Users WHERE Id = ?", id)
-            return res;
-        }
-        catch {
-            return null;
-        }
-    }
-    public async addSession(session: Session): Promise<boolean> {
-        try {
-            await connection.query("INSERT INTO Sessions (Token, User_Id) VALUES (?,?)", session.token, session.userId)
-            return true;
-        }
-        catch {
-            return false;
-        }
-    }
-    public async userFromName(name: string): Promise<(User & Identifiable) | null> {
-        try {
-            const res = await connection.query("SELECT * FROM Users WHERE Name = ?", name)
-            return res;
-        }  
-        catch {
-            return null;
-        }
-    }
-    public async deleteSession(session: Session): Promise<boolean> {
-        try {
-            await connection.query("DELETE * FROM Sessions WHERE Token = ?", session.token)
-            return true;
-        }
-        catch {
-            return false;
-        }
-    }
-}
+  private connection: Pool;
 
+  constructor() {
+    this.connection = mysql.createPool({
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB,
+    });
+  }
+
+  public async addUser(user: User): Promise<boolean> {
+    try {
+      await this.connection.query(
+        "INSERT INTO users (name, password) VALUES (?, ?)",
+        [user.name, user.password],
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  public async sessionFromToken(token: string): Promise<Session | null> {
+    try {
+      const [res] = await this.connection.query(
+        "SELECT * FROM sessions WHERE token = ?",
+        token,
+      ) as RowDataPacket[];
+      return res[0];
+    } catch {
+      return null;
+    }
+  }
+  public async userFromId(id: string): Promise<(User & Identifiable) | null> {
+    try {
+      const [res] = await this.connection.query(
+        "SELECT name, password FROM users WHERE id = ?",
+        id,
+      ) as RowDataPacket[];
+      return res[0];
+    } catch {
+      return null;
+    }
+  }
+  public async addSession(session: Session): Promise<boolean> {
+    try {
+      await this.connection.query(
+        "INSERT INTO sessions (token, user_Id) VALUES (?, ?)",
+        [session.token, session.userId],
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  public async userFromName(
+    name: string,
+  ): Promise<(User & Identifiable) | null> {
+    try {
+      const [res] = await this.connection.query(
+        "SELECT * FROM users WHERE name = ?",
+        [name],
+      ) as RowDataPacket[];
+      return res[0];
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+  public async deleteSession(session: Session): Promise<boolean> {
+    try {
+      await this.connection.query(
+        "DELETE * FROM sessions WHERE token = ?",
+        session.token,
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
