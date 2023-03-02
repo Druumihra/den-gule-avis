@@ -2,7 +2,7 @@ import "./topbar.css";
 import { Link } from "react-router-dom";
 
 interface Props {
-    username?: string;
+    loggedIn?: boolean;
 }
 
 function Topbar(props: Props) {
@@ -12,14 +12,14 @@ function Topbar(props: Props) {
             <Link className="link" to="/">
                 Den Scuffed Avis
             </Link>
-            {!props.username ? (
+            {!props.loggedIn ? (
                 <Link className="link" to="/login">
                     Sign in
                 </Link>
             ) : (
-                <h3 className="user-logged-in">
-                    Logged in as {props.username}
-                </h3>
+                <button id="log-out" className="link">
+                    Log out
+                </button>
             )}
         </div>
     );

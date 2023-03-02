@@ -1,16 +1,15 @@
 import { Product } from "../api/Product";
-import { UserFromTokenResponse as User } from "../api/userFromToken";
 import CommentField from "../components/CommentField";
 import Topbar from "../components/Topbar";
 import { useLoaderData } from "react-router-dom";
 
 function ProductView() {
     const { product } = useLoaderData() as { product: Product };
-    const { user } = useLoaderData() as { user: User };
+    const { isLoggedIn } = useLoaderData() as { isLoggedIn: boolean };
 
     return (
         <>
-            <Topbar username={user ? user.username : ""} />
+            <Topbar loggedIn={isLoggedIn} />
             <main className="cropped">
                 <h1>{product.title}</h1>
                 <div className="product-view-grid">

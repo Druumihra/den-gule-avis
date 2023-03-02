@@ -17,6 +17,7 @@
 } 
 
 .link {
+  margin: 0;
   padding: 4px;
   display: flex;
   align-items: center;

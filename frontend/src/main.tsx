@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         loader: async () => {
             const data = {
                 products: await allProducts(),
-                user: await userInfo(),
+                isLoggedIn: !!(await userInfo()), //hehehehaw
             };
             return data;
         },
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
         loader: async ({ params }) => {
             const data = {
                 product: await oneProduct(`${params.id}`),
-                user: await userInfo(),
+                isLoggedIn: !!(await userInfo()), //hehehehaw
             };
             return data;
         },

@@ -1,4 +1,3 @@
-import { redirect } from "react-router-dom";
 import { authApiUrl } from "./url";
 import { User } from "./User";
 
