@@ -11,12 +11,15 @@ use actix_web::{
     web::{Data, Json, Path},
     App, HttpResponse, HttpServer, Responder,
 };
+use db_impl::mysql::MySql;
 use serde::Deserialize;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+type DbParam = Mutex<dyn Database + Send + Sync>;
+
 #[get("/products")]
-async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
+async fn get_products(db: Data<DbParam>) -> impl Responder {
     let db = (**db).lock().await;
 
     match db.products().await {
@@ -26,7 +29,7 @@ async fn get_products(db: Data<Mutex<dyn Database>>) -> impl Responder {
 }
 
 #[get("/product/{id}")]
-async fn get_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
+async fn get_product(db: Data<DbParam>, id: Path<String>) -> impl Responder {
     let db = (**db).lock().await;
 
     match db.product_from_id(id.clone()).await {
@@ -44,10 +47,7 @@ struct ProductCreateRequest {
 }
 
 #[post("/products")]
-async fn create_product(
-    db: Data<Mutex<dyn Database>>,
-    body: Json<ProductCreateRequest>,
-) -> impl Responder {
+async fn create_product(db: Data<DbParam>, body: Json<ProductCreateRequest>) -> impl Responder {
     let mut db = (**db).lock().await;
 
     let title = body.title.clone();
@@ -61,7 +61,7 @@ async fn create_product(
 }
 
 #[delete("/products/{id}")]
-async fn delete_product(db: Data<Mutex<dyn Database>>, id: Path<String>) -> impl Responder {
+async fn delete_product(db: Data<DbParam>, id: Path<String>) -> impl Responder {
     let mut db = (**db).lock().await;
 
     match db.delete_product(id.clone()).await {
@@ -79,7 +79,7 @@ struct AddCommentRequest {
 
 #[post("/products/{id}/comments")]
 async fn add_comment(
-    db: Data<Mutex<dyn Database>>,
+    db: Data<DbParam>,
     body: Json<AddCommentRequest>,
     id: Path<String>,
 ) -> impl Responder {
@@ -96,16 +96,24 @@ async fn add_comment(
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    std::env::set_var("RUST_LOG", "info");
+    std::env::set_var("RUST_BACKTRACE", "1");
+
     if dotenv::dotenv().is_err() {
         println!("Unable to find .env file");
-        std::process::exit(1);
-    }
+    };
 
-    let products = Arc::new(Mutex::new(db_impl::mysql::MySql::new()));
+    let Ok(db) = MySql::new().await else {
+        println!("Unable to find connect to db");
+        std::process::exit(1);
+    };
+
+    let db: Arc<DbParam> = Arc::new(Mutex::new(db));
+    let db: Data<DbParam> = Data::from(db);
 
     HttpServer::new(move || {
         App::new()
-            .app_data(Data::from(products.clone()))
+            .app_data(Data::clone(&db))
             .wrap(Cors::permissive())
             .service(get_products)
             .service(get_product)
