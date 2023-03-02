@@ -7,11 +7,10 @@ import { useLoaderData } from "react-router-dom";
 function ProductView() {
     const { product } = useLoaderData() as { product: Product };
     const { user } = useLoaderData() as { user: User };
-    console.log(user);
 
     return (
         <>
-            <Topbar username={user.username} />
+            <Topbar username={user ? user.username : ""} />
             <main className="cropped">
                 <h1>{product.title}</h1>
                 <div className="product-view-grid">

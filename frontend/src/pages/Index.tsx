@@ -9,7 +9,6 @@ import "./index.css";
 function Index() {
     const { products } = useLoaderData() as { products: ProductInterface[] };
     const { user } = useLoaderData() as { user: User };
-    console.log(user);
 
     return (
         <>
