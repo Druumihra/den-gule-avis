@@ -9,12 +9,17 @@ export class SQLDb implements Database {
   private connection: Pool;
 
   constructor() {
-    this.connection = mysql.createPool({
-      user: process.env.DB_USER,
-      host: process.env.DB_HOST,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB,
-    });
+    try {
+      this.connection = mysql.createPool({
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB,
+      });
+    } catch {
+      console.error(`unable to connect to database: u@"${process.env.DB_USER}" p@"${process.env.DB_PASSWORD}" h@"${process.env.DB_HOST}" d@"${process.env.DB}"`)
+      throw new Error("unable to connect");
+    }
   }
 
   public async addUser(user: User): Promise<boolean> {
