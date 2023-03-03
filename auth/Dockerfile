@@ -4,6 +4,10 @@ USER runner
 RUN mkdir -p /home/runner/src
 COPY --chown=runner . /home/runner/src
 WORKDIR /home/runner/src
+ENV DB_USER=root
+ENV DB_HOST=db
+ENV DB_PASSWORD=example
+ENV DB=auth
 RUN ["yarn", "install", "--frozen-lockfile"]
 RUN ["yarn", "build"]
 CMD ["yarn", "start"]
