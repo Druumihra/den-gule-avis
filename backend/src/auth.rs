@@ -25,8 +25,7 @@ pub async fn get_username_by_id(id: String) -> Result<String, reqwest::Error> {
         .await?
         .json::<Response>()
         .await?
-        .username
-    )
+        .username)
 }
 
 pub async fn get_user_by_token(token: String) -> User {
