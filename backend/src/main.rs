@@ -167,6 +167,18 @@ async fn main() -> std::io::Result<()> {
         }
     };
 
+    #[cfg(feature = "orm")]
+    let db = {
+        use db_impl::orm::Orm;
+        match Orm::new().await {
+            Ok(db) => db,
+            Err(err) => {
+                println!("Unable to connect to db: {err:?}");
+                std::process::exit(1);
+            }
+        }
+    };
+
     let db: Arc<DbParam> = Arc::new(Mutex::new(db));
     let db: Data<DbParam> = Data::from(db);
 

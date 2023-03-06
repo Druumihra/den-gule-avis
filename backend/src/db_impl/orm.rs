@@ -1,12 +1,8 @@
-pub struct Orm {
-
-}
+pub struct Orm {}
 
 #[async_trait]
 impl Database for Orm {
-    async fn products(&self) {
-
-    }
+    async fn products(&self) {}
 
     async fn add_product(
         &mut self,
@@ -16,8 +12,7 @@ impl Database for Orm {
     ) -> Result<(), Error> {
     }
 
-    async fn product_from_id(&self, id: String) -> Result<Product, Error> {
-    }
+    async fn product_from_id(&self, id: String) -> Result<Product, Error> {}
 
     async fn add_comment(
         &mut self,
@@ -27,6 +22,5 @@ impl Database for Orm {
     ) -> Result<(), Error> {
     }
 
-    async fn delete_product(&mut self, id: String) -> Result<(), Error> {
-    }
+    async fn delete_product(&mut self, id: String) -> Result<(), Error> {}
 }
