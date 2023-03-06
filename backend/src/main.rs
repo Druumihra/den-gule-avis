@@ -144,7 +144,7 @@ async fn add_comment(
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    #[cfg(all(feature = "mysql", feature = "orm"))]
+    #[cfg(any(feature = "mysql", feature = "orm"))]
     if dotenv::dotenv().is_err() {
         println!("Unable to find .env file");
     };
