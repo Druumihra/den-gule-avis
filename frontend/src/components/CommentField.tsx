@@ -20,22 +20,23 @@ function CommentField(props: Props) {
     const Form = fetcher.Form;
 
     return (
-        <>
-            <h2>Kommentarfelt</h2>
+        <div className="comments">
+            <b>Kommentarer</b>
             {ResponseText(fetcher.data)}
             <Form method="post" action={`/product/${props.id}`}>
-                <input type="text" name="text" />
-                <button type="submit" className="button">Send</button>
+                <textarea name="text" placeholder="Skriv en kommentar" required></textarea> 
+                <button type="submit">Send</button>
             </Form>
             {
                 props.comments.map((comment) =>
-                    <div className="comment-block">
-                        <h3>{comment.username}</h3>
-                        <p>{comment.text}</p>
+                    <div className="comment">
+                        <span className="title">{comment.username}</span>
+                        <br />
+                        <span className="content">{comment.text}</span>
                     </div>
                 )
             }
-        </>
+        </div>
     );
 }
 

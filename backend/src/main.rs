@@ -10,12 +10,11 @@ use actix_web::{
     web::{Data, Json, Path},
     App, HttpResponse, HttpServer, Responder,
 };
-use db_impl::mysql::MySql;
 use serde::Deserialize;
-use std::sync::Arc;
-use tokio::sync::Mutex;
 use serde::Serialize;
 use std::collections::HashMap;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 type DbParam = Mutex<dyn Database + Send + Sync>;
 
@@ -60,7 +59,7 @@ async fn get_product(db: Data<DbParam>, id: Path<String>) -> impl Responder {
                     comment.user_id.clone(),
                     auth::get_username_by_id(comment.user_id.clone())
                         .await
-                        .unwrap_or(format!("Unknown user #{}", comment.user_id))
+                        .unwrap_or(format!("Unknown user #{}", comment.user_id)),
                 );
             }
 
@@ -69,13 +68,20 @@ async fn get_product(db: Data<DbParam>, id: Path<String>) -> impl Responder {
                 title: product.title.clone(),
                 description: product.description.clone(),
                 image: product.image.clone(),
-                comments: product.comments.iter().map(|comment| CommentResponse {
-                    id: comment.id.clone(),
-                    text: comment.text.clone(),
-                    username: user_id_name_map.get(&comment.user_id).unwrap_or(&"Unknown".to_string()).clone(),
-                }).collect(),
+                comments: product
+                    .comments
+                    .iter()
+                    .map(|comment| CommentResponse {
+                        id: comment.id.clone(),
+                        text: comment.text.clone(),
+                        username: user_id_name_map
+                            .get(&comment.user_id)
+                            .unwrap_or(&"Unknown".to_string())
+                            .clone(),
+                    })
+                    .collect(),
             })
-        },
+        }
         Err(database::Error::NotFound) => HttpResponse::NotFound().finish(),
         Err(_) => HttpResponse::InternalServerError().finish(),
     }
@@ -138,18 +144,26 @@ async fn add_comment(
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "info");
-    std::env::set_var("RUST_BACKTRACE", "1");
-
+    #[cfg(all(feature = "mysql", feature = "orm"))]
     if dotenv::dotenv().is_err() {
         println!("Unable to find .env file");
     };
 
-    let db = match MySql::new().await {
-        Ok(db) => db,
-        Err(err) => {
-            println!("Unable to connect to db: {err:?}");
-            std::process::exit(1);
+    #[cfg(feature = "based_db")]
+    let db = {
+        use db_impl::based_db::BasedDb;
+        BasedDb::new()
+    };
+
+    #[cfg(feature = "mysql")]
+    let db = {
+        use db_impl::mysql::MySql;
+        match MySql::new().await {
+            Ok(db) => db,
+            Err(err) => {
+                println!("Unable to connect to db: {err:?}");
+                std::process::exit(1);
+            }
         }
     };
 

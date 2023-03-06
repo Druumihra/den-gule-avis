@@ -7,7 +7,7 @@
     text-align: center;
 }
 
-.auth input, button {
+.auth input, .auth button {
     margin-top: 30px;
     padding: 16px;
     font-size: 20px;

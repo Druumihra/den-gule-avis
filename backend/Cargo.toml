@@ -9,8 +9,15 @@ edition = "2021"
 actix-cors = "0.6.4"
 actix-web = "4.3.0"
 async-trait = "0.1.64"
+diesel = "2.0.3"
 dotenv = "0.15.0"
 reqwest = { version = "0.11.14", features = ["json"] }
 serde = { version = "1.0.152", features = ["derive"] }
-sqlx = { version = "0.6.2", features = ["mysql", "runtime-actix-rustls", "offline"] }
+sqlx = { version = "0.6.2", features = ["mysql", "runtime-actix-rustls", "offline"], optional = true }
 tokio = "1.25.0"
+
+[features]
+default = ["mysql"]
+mysql = ["dep:sqlx"]
+orm = []
+based_db = []
