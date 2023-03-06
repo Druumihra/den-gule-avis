@@ -7,8 +7,8 @@ function usernameTaken(user: User, users: User[]) {
   });
 
   return !doesNotExist;
-}
 
+}
 export class BasedDb implements Database {
   private users: (User & Identifiable)[] = [];
   private sessions: Session[] = [];

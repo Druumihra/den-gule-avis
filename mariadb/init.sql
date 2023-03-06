@@ -35,4 +35,4 @@ CREATE TABLE sessions (
 	token NVARCHAR(64) NOT NULL,
 	user_Id INT NOT NULL
 ); 
-
+ 
