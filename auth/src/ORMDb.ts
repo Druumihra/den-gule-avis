@@ -15,7 +15,8 @@ export class ORMDb implements Database {
         },
       });
       return true;
-    } catch {
+    } catch (error) {
+      console.error(error);
       return false;
     }
   }
@@ -59,7 +60,7 @@ export class ORMDb implements Database {
     }
   }
   public async userFromName(
-    name: string,
+    name: string
   ): Promise<(User & Identifiable) | null> {
     try {
       const res = await prisma.users.findFirst({

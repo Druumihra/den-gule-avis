@@ -54,8 +54,14 @@ async function register(req: Request, res: Response, db: Database) {
   if (!body.password) {
     return res.status(400).json({ message: "Invalid password" });
   }
-  await db.addUser({ name: body.username, password: body.password });
-  return res.status(200).json({ message: "Success" });
+  const added = await db.addUser({
+    name: body.username,
+    password: body.password,
+  });
+  if (added) {
+    return res.status(200).json({ message: "Success" });
+  }
+  return res.status(500).json({ message: "nej no" });
 }
 
 async function tokenToUser(req: Request, res: Response, db: Database) {
