@@ -30,18 +30,15 @@ INSERT INTO products (title, description, image) VALUES ("flot fyr 3", "mon han 
 CREATE DATABASE auth;
 
 USE auth;
-
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS sessions;
-
 CREATE TABLE users (
-id INT PRIMARY KEY AUTO_INCREMENT,
-name TEXT NOT NULL,
-password NVARCHAR(150) NOT NULL
+	id NVARCHAR(64) NOT NULL PRIMARY KEY,
+	name TEXT NOT NULL,
+	password NVARCHAR(150) NOT NULL
 );
 
 CREATE TABLE sessions (
-token NVARCHAR(64) NOT NULL,
-user_Id INT NOT NULL
+	id NVARCHAR(64) NOT NULL PRIMARY KEY,
+	token NVARCHAR(64) NOT NULL,
+	userId NVARCHAR(64) NOT NULL
 ); 
- 
+
