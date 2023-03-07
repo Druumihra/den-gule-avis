@@ -7,12 +7,12 @@
           "name": "id",
           "ordinal": 0,
           "type_info": {
-            "char_set": 63,
+            "char_set": 224,
             "flags": {
-              "bits": 515
+              "bits": 4099
             },
-            "max_size": 11,
-            "type": "Long"
+            "max_size": 256,
+            "type": "VarString"
           }
         },
         {
@@ -64,16 +64,6 @@
     },
     "query": "SELECT id, title, description, image FROM products WHERE id = ?;"
   },
-  "25342d8d4ddf80b598c4b8dd461b6ff6b18774d3f2a6ec0953c6be1d9065765d": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Right": 3
-      }
-    },
-    "query": "INSERT INTO products (title, description, image) VALUES (?, ?, ?);"
-  },
   "5b70abb0569912e0062477e62d63b74cd96b8005a23702316f6012540f50d1af": {
     "describe": {
       "columns": [
@@ -81,12 +71,12 @@
           "name": "id",
           "ordinal": 0,
           "type_info": {
-            "char_set": 63,
+            "char_set": 224,
             "flags": {
-              "bits": 515
+              "bits": 4099
             },
-            "max_size": 11,
-            "type": "Long"
+            "max_size": 256,
+            "type": "VarString"
           }
         },
         {
@@ -138,6 +128,16 @@
     },
     "query": "SELECT id, title, description, image FROM products;"
   },
+  "6771a50e430a959006cb4e0a2a4b36252041cca3e72738993fafeaaaacb895e9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 4
+      }
+    },
+    "query": "INSERT INTO comments (id, text, product_id, user_id) VALUES (?, ?, ?, ?);"
+  },
   "6916ad8906767fa5b3601e6ed843b19cce02892ccc1b3c7a76e64b8eeebcb615": {
     "describe": {
       "columns": [
@@ -145,12 +145,12 @@
           "name": "id",
           "ordinal": 0,
           "type_info": {
-            "char_set": 63,
+            "char_set": 224,
             "flags": {
-              "bits": 515
+              "bits": 4099
             },
-            "max_size": 11,
-            "type": "Long"
+            "max_size": 256,
+            "type": "VarString"
           }
         },
         {
@@ -171,22 +171,22 @@
           "type_info": {
             "char_set": 224,
             "flags": {
-              "bits": 4113
+              "bits": 4097
             },
-            "max_size": 262140,
-            "type": "Blob"
+            "max_size": 256,
+            "type": "VarString"
           }
         },
         {
           "name": "product_id",
           "ordinal": 3,
           "type_info": {
-            "char_set": 63,
+            "char_set": 224,
             "flags": {
               "bits": 4105
             },
-            "max_size": 11,
-            "type": "Long"
+            "max_size": 256,
+            "type": "VarString"
           }
         }
       ],
@@ -202,6 +202,16 @@
     },
     "query": "SELECT id, text, user_id, product_id FROM comments;"
   },
+  "9591892c7f82ed1b3211dc8ce5348d2a0297445eb89721bce393b62a4d500d7f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 4
+      }
+    },
+    "query": "INSERT INTO products (id, title, description, image) VALUES (?, ?, ?, ?);"
+  },
   "a05a96d6d4eab432ae6bca8cd6d279cb7edf2d63c633a3052c1727f9ea900dd3": {
     "describe": {
       "columns": [
@@ -209,12 +219,12 @@
           "name": "id",
           "ordinal": 0,
           "type_info": {
-            "char_set": 63,
+            "char_set": 224,
             "flags": {
-              "bits": 515
+              "bits": 4099
             },
-            "max_size": 11,
-            "type": "Long"
+            "max_size": 256,
+            "type": "VarString"
           }
         },
         {
@@ -235,10 +245,10 @@
           "type_info": {
             "char_set": 224,
             "flags": {
-              "bits": 4113
+              "bits": 4097
             },
-            "max_size": 262140,
-            "type": "Blob"
+            "max_size": 256,
+            "type": "VarString"
           }
         }
       ],
@@ -252,15 +262,5 @@
       }
     },
     "query": "SELECT id, text, user_id FROM comments WHERE product_id = ?;"
-  },
-  "c83ec278294cded3cf2fb21b573e009bb6f3c1e586c08103fd6e3d751ab1f65c": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Right": 3
-      }
-    },
-    "query": "INSERT INTO comments (text, product_id, user_id) VALUES (?, ?, ?);"
   }
 }
