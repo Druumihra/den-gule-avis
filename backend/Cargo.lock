@@ -274,6 +274,7 @@ dependencies = [
  "async-trait",
  "diesel",
  "dotenv",
+ "openssl",
  "reqwest",
  "serde",
  "sqlx",
