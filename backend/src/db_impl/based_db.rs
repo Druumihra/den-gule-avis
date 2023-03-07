@@ -1,3 +1,4 @@
+use crate::id::gen_64_char_random_valid_string;
 use async_trait::async_trait;
 
 use crate::{
@@ -7,13 +8,11 @@ use crate::{
 
 pub struct BasedDb {
     products: Vec<Product>,
-    id_counter: u32,
 }
 
 impl BasedDb {
     pub fn new() -> Self {
         Self {
-            id_counter: 0,
             products: vec!(Product {
                 id: "0".to_string(),
                 title: "test".to_string(),
@@ -38,13 +37,12 @@ impl Database for BasedDb {
         image: String,
     ) -> Result<(), Error> {
         self.products.push(Product {
-            id: (self.id_counter + 1).to_string(),
+            id: gen_64_char_random_valid_string().map_err(|_| Error::SSL)?,
             title,
             description,
             image,
             comments: vec![],
         });
-        self.id_counter += 1;
 
         Ok(())
     }
@@ -69,12 +67,10 @@ impl Database for BasedDb {
             .ok_or(Error::NotFound)?;
 
         (*product).comments.push(Comment {
-            id: self.id_counter.to_string(),
+            id: gen_64_char_random_valid_string().map_err(|_| Error::SSL)?,
             text: comment,
             user_id,
         });
-
-        self.id_counter += 1;
 
         Ok(())
     }

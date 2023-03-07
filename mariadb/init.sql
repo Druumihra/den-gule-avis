@@ -5,27 +5,24 @@ CREATE DATABASE backend;
 
 USE backend;
 
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS products;
-
 CREATE TABLE products(
-	id TEXT PRIMARY KEY NOT NULL,
+	id NVARCHAR(64) PRIMARY KEY NOT NULL,
 	title TEXT NOT NULL,
 	description TEXT NOT NULL,
 	image TEXT NOT NULL
 );
 
 CREATE TABLE comments(
-	id TEXT PRIMARY KEY NOT NULL,
+	id NVARCHAR(64) PRIMARY KEY NOT NULL,
 	text TEXT NOT NULL,
-	user_id TEXT NOT NULL,
-	product_id TEXT NOT NULL,
+	user_id NVARCHAR(64) NOT NULL,
+	product_id NVARCHAR(64) NOT NULL,
 	FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
-INSERT INTO products (title, description, image) VALUES ("flot fyr 1", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
-INSERT INTO products (title, description, image) VALUES ("flot fyr 2", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
-INSERT INTO products (title, description, image) VALUES ("flot fyr 3", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
+INSERT INTO products (id, title, description, image) VALUES ("a", "flot fyr 1", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
+INSERT INTO products (id, title, description, image) VALUES ("b", "flot fyr 2", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
+INSERT INTO products (id, title, description, image) VALUES ("c", "flot fyr 3", "mon han kan lide krabbesproget?", "https://tpho.dk/images/me.png");
 
 CREATE DATABASE auth;
 

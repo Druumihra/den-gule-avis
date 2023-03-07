@@ -5,6 +5,7 @@ use sqlx::mysql::MySqlPool;
 
 use crate::{
     database::{Database, Error},
+    id::gen_64_char_random_valid_string,
     types::{Comment, Product},
 };
 
@@ -34,10 +35,10 @@ impl Database for MySql {
             sqlx::query!("SELECT id, title, description, image FROM products;")
                 .fetch_all(&self.pool)
                 .await
-                .map_err(|_| Error::NetworkError)?
+                .map_err(|_| Error::Network)?
                 .into_iter()
                 .map(|product| Product {
-                    id: product.id.to_string(),
+                    id: product.id,
                     title: product.title,
                     image: product.image,
                     description: product.description,
@@ -48,7 +49,7 @@ impl Database for MySql {
         sqlx::query!("SELECT id, text, user_id, product_id FROM comments;")
             .fetch_all(&self.pool)
             .await
-            .map_err(|_| Error::NetworkError)?
+            .map_err(|_| Error::Network)?
             .into_iter()
             .for_each(|comment| {
                 let product = products
@@ -73,14 +74,15 @@ impl Database for MySql {
         image: String,
     ) -> Result<(), Error> {
         sqlx::query!(
-            "INSERT INTO products (title, description, image) VALUES (?, ?, ?);",
+            "INSERT INTO products (id, title, description, image) VALUES (?, ?, ?, ?);",
+            gen_64_char_random_valid_string().map_err(|_| Error::SSL)?,
             title,
             description,
             image
         )
         .execute(&self.pool)
         .await
-        .map_err(|_| Error::NetworkError)?;
+        .map_err(|_| Error::Network)?;
 
         Ok(())
     }
@@ -93,7 +95,7 @@ impl Database for MySql {
         .await
         .map_err(|err| match err {
             sqlx::Error::RowNotFound => Error::NotFound,
-            _ => Error::NetworkError,
+            _ => Error::Network,
         })?;
 
         let comments: Vec<Comment> = sqlx::query!(
@@ -102,7 +104,7 @@ impl Database for MySql {
         )
         .fetch_all(&self.pool)
         .await
-        .map_err(|_| Error::NetworkError)?
+        .map_err(|_| Error::Network)?
         .into_iter()
         .map(|comment| Comment {
             id: comment.id.to_string(),
@@ -126,7 +128,8 @@ impl Database for MySql {
         user_id: String,
     ) -> Result<(), Error> {
         sqlx::query!(
-            "INSERT INTO comments (text, product_id, user_id) VALUES (?, ?, ?);",
+            "INSERT INTO comments (id, text, product_id, user_id) VALUES (?, ?, ?, ?);",
+            gen_64_char_random_valid_string().map_err(|_| Error::SSL)?,
             comment,
             product_id,
             user_id,
@@ -135,7 +138,7 @@ impl Database for MySql {
         .await
         .map_err(|err| match err {
             sqlx::Error::RowNotFound => Error::NotFound,
-            _ => Error::NetworkError,
+            _ => Error::Network,
         })?;
 
         Ok(())
