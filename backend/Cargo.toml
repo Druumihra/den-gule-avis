@@ -18,7 +18,7 @@ sqlx = { version = "0.6.2", features = ["mysql", "runtime-actix-rustls", "offlin
 tokio = "1.25.0"
 
 [features]
-default = ["orm"]
+default = ["mysql"]
 mysql = ["dep:sqlx", "dep:dotenv"]
 orm = ["dep:dotenv", "dep:quaint"]
 based_db = []
