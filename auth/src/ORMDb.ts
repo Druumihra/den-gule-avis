@@ -1,17 +1,22 @@
 import { PrismaClient } from "@prisma/client";
-import { parse } from "dotenv";
 import { Database, Identifiable, Session, User } from "./Database";
 import { generateToken } from "./generateToken";
 
-const prisma = new PrismaClient();
 export class ORMDb implements Database {
+
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient({ datasources: { db: { url: process.env.DATABASE_URL! } } });
+  }
+
   public async addUser(user: User): Promise<boolean> {
     try {
-      await prisma.users.create({
+      await this.prisma.users.create({
         data: {
+          id: generateToken(64),
           name: user.name,
           password: user.password,
-          id: generateToken(64),
         },
       });
       return true;
@@ -22,7 +27,7 @@ export class ORMDb implements Database {
   }
   public async sessionFromToken(token: string): Promise<Session | null> {
     try {
-      const res = await prisma.sessions.findFirst({
+      const res = await this.prisma.sessions.findFirst({
         where: {
           token: token,
         },
@@ -34,20 +39,21 @@ export class ORMDb implements Database {
   }
   public async userFromId(id: string): Promise<(User & Identifiable) | null> {
     try {
-      const res = await prisma.users.findUnique({
+      const res = await this.prisma.users.findUnique({
         where: {
           id: id,
         },
       });
 
       return res;
-    } catch {
+    } catch (err) {
+      console.error(err);
       return null;
     }
   }
   public async addSession(session: Session): Promise<boolean> {
     try {
-      prisma.sessions.create({
+      await this.prisma.sessions.create({
         data: {
           id: generateToken(64),
           token: session.token,
@@ -55,7 +61,8 @@ export class ORMDb implements Database {
         },
       });
       return true;
-    } catch {
+    } catch (err) {
+      console.error(err);
       return false;
     }
   }
@@ -63,7 +70,7 @@ export class ORMDb implements Database {
     name: string
   ): Promise<(User & Identifiable) | null> {
     try {
-      const res = await prisma.users.findFirst({
+      const res = await this.prisma.users.findFirst({
         where: {
           name: {
             equals: name,
@@ -76,13 +83,14 @@ export class ORMDb implements Database {
         },
       });
       return res;
-    } catch {
+    } catch (err) {
+      console.error(err);
       return null;
     }
   }
   public async deleteSession(session: Session): Promise<boolean> {
     try {
-      const idResult: Identifiable | null = await prisma.sessions.findFirst({
+      const idResult: Identifiable | null = await this.prisma.sessions.findFirst({
         where: {
           token: session.token,
         },
@@ -93,13 +101,14 @@ export class ORMDb implements Database {
       if (!idResult) {
         return false;
       }
-      await prisma.sessions.delete({
+      await this.prisma.sessions.delete({
         where: {
           id: idResult.id,
         },
       });
       return true;
-    } catch {
+    } catch (err) {
+      console.error(err);
       return false;
     }
   }

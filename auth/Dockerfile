@@ -8,6 +8,8 @@ ENV DB_USER=root
 ENV DB_HOST=db
 ENV DB_PASSWORD=example
 ENV DB=auth
+ENV DATABASE_URL=mysql://root:example@db:3306/auth
 RUN ["yarn", "install", "--frozen-lockfile"]
+RUN ["npx", "prisma", "generate"]
 RUN ["yarn", "build"]
 CMD ["yarn", "start"]

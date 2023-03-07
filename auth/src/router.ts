@@ -35,7 +35,10 @@ async function login(req: Request, res: Response, db: Database) {
   }
 
   const token = generateToken(64);
-  await db.addSession({ userId: user.id, token: token });
+  const result = await db.addSession({ userId: user.id, token: token });
+  if (!result) {
+    return res.status(500).json({ message: "Server error" });
+  }
 
   res.cookie("token", token, {
     maxAge: 7200000,

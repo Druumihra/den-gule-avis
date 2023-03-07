@@ -1,9 +1,9 @@
 import mysql, { Pool } from "mysql2/promise";
 import {
-  OkPacket,
   RowDataPacket,
 } from "mysql2/typings/mysql/lib/protocol/packets";
 import { Database, Identifiable, Session, User } from "./Database";
+import { generateToken } from "./generateToken";
 
 export class SQLDb implements Database {
   private connection: Pool;
@@ -25,8 +25,8 @@ export class SQLDb implements Database {
   public async addUser(user: User): Promise<boolean> {
     try {
       await this.connection.query(
-        "INSERT INTO users (name, password) VALUES (?, ?)",
-        [user.name, user.password],
+        "INSERT INTO users (id, name, password) VALUES (?, ?, ?)",
+        [generateToken(64), user.name, user.password],
       );
       return true;
     } catch {
@@ -58,8 +58,8 @@ export class SQLDb implements Database {
   public async addSession(session: Session): Promise<boolean> {
     try {
       await this.connection.query(
-        "INSERT INTO sessions (token, user_Id) VALUES (?, ?)",
-        [session.token, session.userId],
+        "INSERT INTO sessions (id, token, user_Id) VALUES (?, ?, ?)",
+        [generateToken(64), session.token, session.userId],
       );
       return true;
     } catch {
@@ -83,7 +83,7 @@ export class SQLDb implements Database {
   public async deleteSession(session: Session): Promise<boolean> {
     try {
       await this.connection.query(
-        "DELETE * FROM sessions WHERE token = ?",
+        "DELETE FROM sessions WHERE token = ?",
         session.token,
       );
       return true;

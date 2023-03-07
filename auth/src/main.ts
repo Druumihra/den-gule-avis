@@ -2,13 +2,11 @@ import express from "express";
 import cors from "cors";
 import { routing } from "./router";
 import dotenv from "dotenv";
-import { SQLDb } from "./SQLDb";
 import { ORMDb } from "./ORMDb";
 
 const server = async () => {
   dotenv.config();
 
-  const sqlDb = new SQLDb();
   const prismaDb = new ORMDb();
 
   const app = express();
