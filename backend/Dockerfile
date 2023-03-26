@@ -1,6 +1,7 @@
-FROM docker.io/rust:bullseye AS builder
+FROM docker.io/rust:1.68.1-bullseye AS builder
 WORKDIR /src
 COPY . /src
+ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 RUN cargo build --release
 
 FROM docker.io/debian:bullseye AS runner
